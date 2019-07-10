@@ -1,27 +1,16 @@
 <%@ page language="java" pageEncoding="utf-8" contentType="text/html;charset=utf-8" %>
 <%!
 
-//Database連線參數
-public static final String	gcDataSourceNameCMSIOT						= "jdbc/cmsiot";
-
-//SSD發送簡訊相關參數
-public static final String gcSSDSendSMSURL							= "http://sms.gslssd.com/smsChannel/replaceSMSCID/sendMessage"; //SSD發送簡訊API的URL，須將replaceSMSCID改為真正的SMSC ID
+//登入帳號
+public static final String[][]	gcUsers								= {{"Sunny", "Sunny"}
+																		, {"frank", "2222"}
+																	  };
 
 //FCM server URL
 public static final String gcFCMServerURL							= "https://fcm.googleapis.com/fcm/send";
 public static final String gcFCMServerURLNew						= "https://fcm.googleapis.com/v1/projects/mobileid-sc-taisys/messages:send";
 
 /*****************************************************************************/
-//Email相關設定
-public static final String	gcDefaultEmailSMTPServer				= "email-smtp.us-east-1.amazonaws.com";	//發送email的郵件主機(OA，可寄送至外部信箱)
-public static final int		gcDefaultEmailSMTPServerPort			= 465;	//發送email的郵件主機port
-public static final String	gcDefaultEmailSMTPServerUserName		= "AKIAJGVKZSKUYEII5CEQ";	//發送email的郵件主機UserName
-public static final String	gcDefaultEmailSMTPServerPassword		= "Aq3hDhmDq0PLo48/UMIp/E/z0SXqlkv9+bJG/gED1+Aw";	//發送email的郵件主機Password
-public static final String	gcDefaultEmailFromAddress				= "support@taisys.com";	//發送email的發信人email address
-public static final String	gcDefaultEmailFromName					= "太思客服中心";	//發送email的發信人名稱
-public static final String	gcDefaultEmailFromAddressVAS			= "support@taisys.com";	//發送內部email的發信人email address
-public static final String	gcDefaultEmailFromNameVAS				= "中華SSD專案通知";	//發送內部email的發信人名稱
-public static final String	gcDefaultEmailToAddressVAS				= "sunny.sun@taisys.com";	//發送內部email的收信人email address
 
 //ResultCode及ResultText定義
 public static final String	gcResultCodeSuccess						= "00000";

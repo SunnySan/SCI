@@ -36,33 +36,7 @@
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">請輸入帳號密碼</p>
-
-    <form id="frmMain" name="frmMain" action="#" method="post">
-      <div class="form-group has-feedback">
-        <input type="text" id="userId" class="form-control" placeholder="帳號">
-        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="password" id="userPassword" class="form-control" placeholder="密碼">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
-      <div class="row">
-        <div class="col-xs-4">
-        <!--<div class="col-xs-8">-->
-          <div class="checkbox icheck">
-            <label>
-              <!--<input type="checkbox"> 記住我-->
-            </label>
-          </div>
-        </div>
-        <!-- /.col -->
-        <div class="col-xs-4">
-          <button type="button" class="btn btn-primary btn-block btn-flat" onclick="doLogin();">登入</button>
-        </div>
-        <!-- /.col -->
-      </div>
-    </form>
+    <p class="login-box-msg">用戶登出</p>
 
   </div>
   <!-- /.login-box-body -->
@@ -86,50 +60,26 @@
 
 <script>
 	$(function () {
-		$('input').iCheck({
-			checkboxClass: 'icheckbox_square-blue',
-			radioClass: 'iradio_square-blue',
-			increaseArea: '20%' /* optional */
-		});
-		
-		$('#UserId').focus();
-		
-		$("#frmMain").keypress(function(event) {
-			if (event.which == 13) {
-				event.preventDefault();
-				doLogin();
-			}
-		});
-	
+		doLogout();	
 	});
 
-	function doLogin(){
-		event.preventDefault();
-		var uid = $('#userId').val();
-		var upassword = $('#userPassword').val();
-		if (beEmpty(uid) || beEmpty(upassword)){
-				msgBox('請輸入帳號密碼!');
-				return false;
-		}
-
+	function doLogout(){
 		var sData = "";
-		sData += "uid=" + uid;
-		sData += "&upassword=" + upassword;
 
-		getDataFromServer("ajaxDoLogin.jsp", sData, "json", function(data){
+		getDataFromServer("ajaxDoLogout.jsp", sData, "json", function(data){
 			if (!data.resultCode || !data.resultText){
-				msgBox("無法取得登入結果");
+				msgBox("無法取得作業結果!");
 				return;
 			}else{
 				if (data.resultCode=="00000"){
-					setLocalValue("uid", uid);
-					location.href = "index.html";
+					setLocalValue("uid", "");
+					location.href = "login.html";
 				}else{
-					msgBox("登入失敗：" + data.resultText);
+					msgBox("登出失敗：<br>" + data.resultText);
 				}
 			}
 
 		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
-	}	//function doLogin(){
+	}
 
 </script>
