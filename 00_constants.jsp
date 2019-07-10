@@ -6,9 +6,8 @@ public static final String[][]	gcUsers								= {{"Sunny", "Sunny"}
 																		, {"frank", "2222"}
 																	  };
 
-//FCM server URL
-public static final String gcFCMServerURL							= "https://fcm.googleapis.com/fcm/send";
-public static final String gcFCMServerURLNew						= "https://fcm.googleapis.com/v1/projects/mobileid-sc-taisys/messages:send";
+//SCI API server URL
+public static final String gcSCIServerURL							= "https://172.20.1.16/";
 
 /*****************************************************************************/
 
