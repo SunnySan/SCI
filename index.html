@@ -118,37 +118,25 @@
 				</div><!-- Box header -->
 				<div class="box-body">
 					<div class="row">
-						<div class="col-lg-3 col-xs-6">
+						<div class="col-lg-4 col-xs-12">
 							<div class="form-group">
 								<label>APs</label>
-								<select class="form-control select2" multiple="multiple" data-placeholder="選擇AP" style="width: 100%;">
+								<select id="aps" onchange="updateApList();" class="form-control select2" multiple="multiple" data-placeholder="選擇AP群組" style="width: 100%;">
 									<option selected value="all">全部</option>
-									<option>Alaska</option>
-									<option>California</option>
-									<option>Delaware</option>
-									<option>Tennessee</option>
-									<option>Texas</option>
-									<option>Washington</option>
 								</select>
 							</div><!-- <div class="form-group"> -->
 						</div><!-- ./col -->
 
-						<div class="col-lg-3 col-xs-6">
+						<div class="col-lg-4 col-xs-12">
 							<div class="form-group">
 								<label>AP</label>
-								<select class="form-control select2" multiple="multiple" data-placeholder="選擇AP" style="width: 100%;">
+								<select id="ap" class="form-control select2" multiple="multiple" data-placeholder="選擇AP" style="width: 100%;">
 									<option selected value="all">全部</option>
-									<option>Alaska</option>
-									<option>California</option>
-									<option>Delaware</option>
-									<option>Tennessee</option>
-									<option>Texas</option>
-									<option>Washington</option>
 								</select>
 							</div><!-- <div class="form-group"> -->
 						</div><!-- ./col -->
 
-						<div class="col-lg-3 col-xs-6">
+						<div class="col-lg-4 col-xs-12">
 							<div class="form-group">
 								<label>SSID</label>
 								<select class="form-control select2" multiple="multiple" data-placeholder="選擇SSID" style="width: 100%;" disabled>
@@ -159,21 +147,21 @@
 							</div><!-- <div class="form-group"> -->
 						</div><!-- ./col -->
 
-						<div class="col-lg-3 col-xs-6">
+					</div><!-- ./row -->
+
+					<div class="row">
+						<div class="col-lg-4 col-xs-12">
 							<div class="form-group">
 								<label>Radio</label>
-								<select class="form-control select2" multiple="multiple" data-placeholder="選擇Radio" style="width: 100%;" id="selRadio">
+								<select id="radio" class="form-control select2" multiple="multiple" data-placeholder="選擇Radio" style="width: 100%;" id="selRadio">
 									<option selected value="all">全部</option>
-									<option value="5G">5GHz</option>
-									<option value="2.4G">2.4GHz</option>
+									<option value="5">5GHz</option>
+									<option value="2.4">2.4GHz</option>
 								</select>
 							</div><!-- <div class="form-group"> -->
 						</div><!-- ./col -->
 
-					</div><!-- ./row -->
-
-					<div class="row">
-						<div class="col-lg-3 col-xs-6">
+						<div class="col-lg-4 col-xs-12">
 							<!-- Date range -->
 							<div class="form-group">
 								<label>日期區間</label>
@@ -192,7 +180,7 @@
 				</div><!-- /.box-body -->
 
 				<div class="box-footer">
-					<button type="submit" class="btn btn-primary">確認</button>
+					<button type="button" class="btn btn-primary" onclick="getAllReports();">確認</button>
 				</div><!-- /.box-footer-->
 
 			</div><!-- /.box -->
@@ -218,7 +206,7 @@
 							<!-- small box -->
 							<div class="small-box bg-aqua">
 								<div class="inner">
-									<h3 id="3_10_applications"></h3>
+									<h3 id="3_10_applications" class="reportdata"></h3>
 									<p>Recognized Apps<br>&nbsp;</p>
 								</div>
 								<div class="icon">
@@ -231,7 +219,7 @@
 							<!-- small box -->
 							<div class="small-box bg-green">
 								<div class="inner">
-									<h3 id="3_10_totalRxBytes"></h3>
+									<h3 id="3_10_totalRxBytes" class="reportdata"></h3>
 									<p>Rx<br>&nbsp;</p>
 								</div>
 								<div class="icon">
@@ -244,7 +232,7 @@
 							<!-- small box -->
 							<div class="small-box bg-yellow">
 								<div class="inner">
-									<h3 id="3_10_totalTxBytes"></h3>
+									<h3 id="3_10_totalTxBytes" class="reportdata"></h3>
 									<p>Tx<br>&nbsp;</p>
 								</div>
 								<div class="icon">
@@ -257,8 +245,8 @@
 							<!-- small box -->
 							<div class="small-box bg-red">
 								<div class="inner">
-									<h3>5.6%</h3>
-									<p>These Apps consume <span id="3_10_metadata_percentage"></span>% ( <span id="3_10_metadata_traffic"></span> ) of the total traffic ( <span id="3_10_metadata_totalTraffic"></span> ).</p>
+									<h3><span id="3_10_metadata_percentage1" class="reportdata"></span>%</h3>
+									<p>These Apps consume <span id="3_10_metadata_percentage2" class="reportdata"></span>% ( <span id="3_10_metadata_traffic" class="reportdata"></span> ) of the total traffic ( <span id="3_10_metadata_totalTraffic" class="reportdata"></span> ).</p>
 								</div>
 								<div class="icon">
 									<i class="ion ion-pie-graph"></i>
@@ -310,7 +298,7 @@
 <script>
 	$(document).ready(function () {
 		initPage();
-		getReport3_10();
+		
 	})
 </script>
 
@@ -354,20 +342,100 @@
 				$('#endDate').val(end.format('YYYY-MM-DD'));
 			}
 		);
+		getTribeApList();
+		getAllReports();
 	}
 
-	function getRadio(){
-		if ($('select#selRadio').val().indexOf("all")>-1){
-			$('select#selRadio').val("all");
-			$('select#selRadio').trigger('change');
-		}
-	}	//function getRadio(){
+	var tribeList = null;
+	function getTribeApList(){
+		$.getJSON( "TribeApList.json", function(data) { 
+			tribeList = data;
+			$.each( data.tribes, function(j, t) {
+				$("#aps").append($("<option></option>").attr("value", t.tribe).text(t.tribe));
+			});	//$.each( data.tribes, function(j, t) {
+		});	//$.getJSON( "TribeApList.json", function(data) { 
+	}
+	
+	function updateApList(){
+		var tribeId = "";
+		//  移除全部的項目
+		$("#ap option").remove();
+		$("#ap").append($("<option></option>").attr("value", "all").text("全部"));
+		$("#aps").find(":selected").each(function() {
+			tribeId = this.value;
+			if (tribeId!="all"){	//找該APs底下的AP
+				$.each( tribeList.tribes, function(j, t) {
+					if (t.tribe==tribeId){
+						$.each( t.aps, function(i, r) {
+							$("#ap").append($("<option></option>").attr("value", r.mac).text(r.tribe + ": " + r.ap + "(" + r.mac + ")"));
+						});	//$.each( t.aps, function(i, r) {
+					}
+				});	//$.each( data.tribes, function(j, t) {
+			}
+		});
+		$('#ap option').get(0).selected = true;
+	}
 </script>
 
 <script>
-	function getReport3_10(){
+	function generateQueryString(reportId, section){	//產生查詢條件
 		var startDate = $('#startDate').val();
 		var endDate = $('#endDate').val();
+
+		var sData = "";
+		var bHasFilter = false;
+		var s = "";
+		var filterData = { "type":"or","fields":[]};
+		var jsonData = {};
+		
+		sData = "reportId=3";
+		sData += "&section=10";
+		sData += "&startDate=" + startDate;
+		sData += "&endDate=" + endDate;
+		
+		s = $('#aps').val();
+		if (s.indexOf("all")<0){
+			$("#aps").find(":selected").each(function() {
+				bHasFilter = true;
+				jsonData["type"]="selector";
+				jsonData["dimension"]="zoneName";
+				jsonData["value"]=this.value;
+				filterData.fields.push(jsonData);
+			});
+		}	//if (s.indexOf("all")<0){
+
+		s = $('#ap').val();
+		if (s.indexOf("all")<0){
+			$("#ap").find(":selected").each(function() {
+				bHasFilter = true;
+				jsonData["type"]="selector";
+				jsonData["dimension"]="apMac";
+				jsonData["value"]=this.value;
+				filterData.fields.push(jsonData);
+			});
+		}	//if (s.indexOf("all")<0){
+
+		s = $('#radio').val();
+		if (s.indexOf("all")<0){
+			$("#radio").find(":selected").each(function() {
+				bHasFilter = true;
+				jsonData["type"]="selector";
+				jsonData["dimension"]="radio";
+				jsonData["value"]=this.value;
+				filterData.fields.push(jsonData);
+			});
+		}	//if (s.indexOf("all")<0){
+
+		if (bHasFilter) sData += "&filter=" + JSON.stringify(filterData);
+		return sData;
+	}	//function generateQueryString(reportId, section){	//產生查詢條件
+
+	function getAllReports(){
+		clearAllReport();
+		getReport3_10();
+	}
+
+	function getReport3_10(){
 
 		var applications = 0.0;
 		var totalRxBytes = 0.0;
@@ -377,11 +445,10 @@
 		var metadata_traffic = 0.0;
 		var metadata_percentage = 0.0;
 		
-		var sData = "";
-		sData = "startDate=" + startDate;
-		sData += "&endDate=" + endDate;
+		var sData = generateQueryString("3", "10");
+		//console.log(sData);
 
-		getDataFromServer("ajaxGetReport3_10.jsp", sData, "json", function(data){
+		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
 			if (!data.resultCode || !data.resultText){
 				msgBox("無法取得資料");
 				return;
@@ -389,24 +456,29 @@
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
 					//alert(JSON.stringify(records.data));
-					$.each( records.data, function(i, r) {
-						$.each( r, function(i1, r1) {
-							if (r1.applications) applications = r1.applications;
-							if (r1.totalRxBytes) totalRxBytes = r1.totalRxBytes;
-							if (r1.totalTxBytes) totalTxBytes = r1.totalTxBytes;
-							if (r1.totalTraffic) totalTraffic = r1.totalTraffic;
-						});
-					});	//$.each( data.orders, function(i, r) {
-					metadata_totalTraffic = records.metadata.totalTraffic;
-					metadata_traffic = records.metadata.traffic;
-					metadata_percentage = records.metadata.percentage;
-					$('#3_10_applications').text(Math.round(applications));
-					$('#3_10_totalRxBytes').text(formatBytes(totalRxBytes));
-					$('#3_10_totalTxBytes').text(formatBytes(totalTxBytes));
-					metadata_percentage = (metadata_percentage*100).toFixed(2);
-					$('#3_10_metadata_percentage').text(metadata_percentage);
-					$('#3_10_metadata_traffic').text(formatBytes(metadata_traffic));
-					$('#3_10_metadata_totalTraffic').text(formatBytes(metadata_totalTraffic));
+					try{
+						$.each( records.data, function(i, r) {
+							$.each( r, function(i1, r1) {
+								if (r1.applications) applications = r1.applications;
+								if (r1.totalRxBytes) totalRxBytes = r1.totalRxBytes;
+								if (r1.totalTxBytes) totalTxBytes = r1.totalTxBytes;
+								if (r1.totalTraffic) totalTraffic = r1.totalTraffic;
+							});
+						});	//$.each( data.orders, function(i, r) {
+						metadata_totalTraffic = records.metadata.totalTraffic;
+						metadata_traffic = records.metadata.traffic;
+						metadata_percentage = records.metadata.percentage;
+						$('#3_10_applications').text(toCurrency(Math.round(applications).toString()));
+						$('#3_10_totalRxBytes').text(formatBytes(totalRxBytes));
+						$('#3_10_totalTxBytes').text(formatBytes(totalTxBytes));
+						metadata_percentage = (metadata_percentage*100).toFixed(2);
+						$('#3_10_metadata_percentage1').text(metadata_percentage);
+						$('#3_10_metadata_percentage2').text(metadata_percentage);
+						$('#3_10_metadata_traffic').text(formatBytes(metadata_traffic));
+						$('#3_10_metadata_totalTraffic').text(formatBytes(metadata_totalTraffic));
+					}catch( e){
+						msgBox("資料解析失敗，找不到資料!");
+					}
 				}else{
 					msgBox("取得資料時失敗：" + data.resultText);
 				}
@@ -414,4 +486,8 @@
 
 		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
+	
+	function clearAllReport(){
+		$('.reportdata').text("");
+	}	//function clearAllReport(){
 </script>

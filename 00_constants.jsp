@@ -1,6 +1,9 @@
 <%@ page language="java" pageEncoding="utf-8" contentType="text/html;charset=utf-8" %>
 <%!
 
+//Database連線參數
+public static final String	gcDataSourceNameCMSIOT						= "jdbc/cmsiot";
+
 //登入帳號
 public static final String[][]	gcUsers								= {{"Sunny", "Sunny"}
 																		, {"frank", "2222"}
