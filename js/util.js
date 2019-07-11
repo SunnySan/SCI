@@ -18,6 +18,13 @@ function notEmpty(s){
 	return (s!=null && s!='undefined' && s.length>0);
 }	//function scrollToTop(){
 
+/**********將浮點數字改為以K、MB、GB為單位**********/
+function formatBytes(bytes){
+	var s = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+	var e = Math.floor(Math.log(bytes)/Math.log(1024 ));
+	return (bytes/ Math.pow(1024 , Math.floor(e))).toFixed(2 )+" "+s[e];
+}
+
 /**********將金額字串加上千位的逗點**********/
 function toCurrency(s){
 	if (beEmpty(s)) return "";	//字串為空

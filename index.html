@@ -120,6 +120,21 @@
 					<div class="row">
 						<div class="col-lg-3 col-xs-6">
 							<div class="form-group">
+								<label>APs</label>
+								<select class="form-control select2" multiple="multiple" data-placeholder="選擇AP" style="width: 100%;">
+									<option selected value="all">全部</option>
+									<option>Alaska</option>
+									<option>California</option>
+									<option>Delaware</option>
+									<option>Tennessee</option>
+									<option>Texas</option>
+									<option>Washington</option>
+								</select>
+							</div><!-- <div class="form-group"> -->
+						</div><!-- ./col -->
+
+						<div class="col-lg-3 col-xs-6">
+							<div class="form-group">
 								<label>AP</label>
 								<select class="form-control select2" multiple="multiple" data-placeholder="選擇AP" style="width: 100%;">
 									<option selected value="all">全部</option>
@@ -136,14 +151,10 @@
 						<div class="col-lg-3 col-xs-6">
 							<div class="form-group">
 								<label>SSID</label>
-								<select class="form-control select2" multiple="multiple" data-placeholder="選擇SSID" style="width: 100%;">
+								<select class="form-control select2" multiple="multiple" data-placeholder="選擇SSID" style="width: 100%;" disabled>
 									<option selected value="all">全部</option>
-									<option>Alaska</option>
-									<option>California</option>
-									<option>Delaware</option>
-									<option>Tennessee</option>
-									<option>Texas</option>
-									<option>Washington</option>
+									<option>iTribe</option>
+									<option>iTaiwan</option>
 								</select>
 							</div><!-- <div class="form-group"> -->
 						</div><!-- ./col -->
@@ -151,7 +162,7 @@
 						<div class="col-lg-3 col-xs-6">
 							<div class="form-group">
 								<label>Radio</label>
-								<select class="form-control select2" multiple="multiple" data-placeholder="選擇Radio" style="width: 100%;" id="selRadio" onchange="getRadio();">
+								<select class="form-control select2" multiple="multiple" data-placeholder="選擇Radio" style="width: 100%;" id="selRadio">
 									<option selected value="all">全部</option>
 									<option value="5G">5GHz</option>
 									<option value="2.4G">2.4GHz</option>
@@ -159,6 +170,9 @@
 							</div><!-- <div class="form-group"> -->
 						</div><!-- ./col -->
 
+					</div><!-- ./row -->
+
+					<div class="row">
 						<div class="col-lg-3 col-xs-6">
 							<!-- Date range -->
 							<div class="form-group">
@@ -167,8 +181,10 @@
 									<div class="input-group-addon">
 										<i class="fa fa-calendar"></i>
 									</div>
-									<input type="text" class="form-control pull-right" id="reservation" placeholder="選擇日期區間">
+									<input type="text" class="form-control pull-right" id="dateRange" placeholder="選擇日期區間">
 								</div><!-- /.input group -->
+								<input type="hidden" id="startDate" value="">
+								<input type="hidden" id="endDate" value="">
 							</div><!-- /.form group -->				
 						</div><!-- ./col -->
 					</div><!-- ./row -->
@@ -202,7 +218,7 @@
 							<!-- small box -->
 							<div class="small-box bg-aqua">
 								<div class="inner">
-									<h3>150</h3>
+									<h3 id="3_10_applications"></h3>
 									<p>Recognized Apps<br>&nbsp;</p>
 								</div>
 								<div class="icon">
@@ -215,7 +231,7 @@
 							<!-- small box -->
 							<div class="small-box bg-green">
 								<div class="inner">
-									<h3>53<sup style="font-size: 20px">%</sup></h3>
+									<h3 id="3_10_totalRxBytes"></h3>
 									<p>Rx<br>&nbsp;</p>
 								</div>
 								<div class="icon">
@@ -228,7 +244,7 @@
 							<!-- small box -->
 							<div class="small-box bg-yellow">
 								<div class="inner">
-									<h3>44</h3>
+									<h3 id="3_10_totalTxBytes"></h3>
 									<p>Tx<br>&nbsp;</p>
 								</div>
 								<div class="icon">
@@ -242,7 +258,7 @@
 							<div class="small-box bg-red">
 								<div class="inner">
 									<h3>5.6%</h3>
-									<p>These Apps consume 5.6% ( 6.421TB ) of the total traffic ( 114.7TB ).</p>
+									<p>These Apps consume <span id="3_10_metadata_percentage"></span>% ( <span id="3_10_metadata_traffic"></span> ) of the total traffic ( <span id="3_10_metadata_totalTraffic"></span> ).</p>
 								</div>
 								<div class="icon">
 									<i class="ion ion-pie-graph"></i>
@@ -293,7 +309,19 @@
 
 <script>
 	$(document).ready(function () {
-		$('.sysUserName').text(getLocalValue("uid"));
+		initPage();
+		getReport3_10();
+	})
+</script>
+
+
+<script>
+	function initPage(){
+		var uid = getLocalValue("uid");
+		if (beEmpty(uid)){
+			msgBox("閒置太久，請重新登入!", function(){location.href="login.html";});
+		}
+		$('.sysUserName').text(uid);
 		$('.sidebar-menu').tree();
 		
 		//Initialize Select2 Elements
@@ -301,36 +329,89 @@
 		$('.select2').select2();
 		
 		//Date range picker
-		$('#reservation').daterangepicker();
+		//$('#dateRange').daterangepicker();
 		//Date range picker with time picker
-		$('#reservationtime').daterangepicker({ timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A' });
+		//$('#reservationtime').daterangepicker({ timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A' });
 		//Date range as a button
-		$('#daterange-btn').daterangepicker({
+		$('#dateRange').daterangepicker({
 			ranges   : {
 			'今天'       : [moment(), moment()],
-			'昨天'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+			'昨天至今'   : [moment().subtract(1, 'days'), moment()],
 			'過去7天' : [moment().subtract(6, 'days'), moment()],
 			'過去30天': [moment().subtract(29, 'days'), moment()],
 			'本月'  : [moment().startOf('month'), moment().endOf('month')],
 			'上個月'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
 			},
-			startDate: moment().subtract(29, 'days'),
-			endDate  : moment()
+			startDate: moment().subtract(1, 'days'),
+			endDate  : moment(),
+			locale: {
+				format: 'YYYY-MM-DD'
+				}
 			},
 			function (start, end) {
-				$('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+				$('#dateRange span').html(start.format('MMMM D, YYYY') + ' ~ ' + end.format('MMMM D, YYYY'));
+				$('#startDate').val(start.format('YYYY-MM-DD'));
+				$('#endDate').val(end.format('YYYY-MM-DD'));
 			}
 		);
-	
-	})
-</script>
+	}
 
-
-<script>
 	function getRadio(){
 		if ($('select#selRadio').val().indexOf("all")>-1){
-			$('select#selRadio').val("5G");
+			$('select#selRadio').val("all");
 			$('select#selRadio').trigger('change');
 		}
 	}	//function getRadio(){
+</script>
+
+<script>
+	function getReport3_10(){
+		var startDate = $('#startDate').val();
+		var endDate = $('#endDate').val();
+
+		var applications = 0.0;
+		var totalRxBytes = 0.0;
+		var totalTxBytes = 0.0;
+		var totalTraffic = 0.0;
+		var metadata_totalTraffic = 0.0;
+		var metadata_traffic = 0.0;
+		var metadata_percentage = 0.0;
+		
+		var sData = "";
+		sData = "startDate=" + startDate;
+		sData += "&endDate=" + endDate;
+
+		getDataFromServer("ajaxGetReport3_10.jsp", sData, "json", function(data){
+			if (!data.resultCode || !data.resultText){
+				msgBox("無法取得資料");
+				return;
+			}else{
+				if (data.resultCode=="00000"){
+					var records = JSON.parse(data.records);
+					//alert(JSON.stringify(records.data));
+					$.each( records.data, function(i, r) {
+						$.each( r, function(i1, r1) {
+							if (r1.applications) applications = r1.applications;
+							if (r1.totalRxBytes) totalRxBytes = r1.totalRxBytes;
+							if (r1.totalTxBytes) totalTxBytes = r1.totalTxBytes;
+							if (r1.totalTraffic) totalTraffic = r1.totalTraffic;
+						});
+					});	//$.each( data.orders, function(i, r) {
+					metadata_totalTraffic = records.metadata.totalTraffic;
+					metadata_traffic = records.metadata.traffic;
+					metadata_percentage = records.metadata.percentage;
+					$('#3_10_applications').text(Math.round(applications));
+					$('#3_10_totalRxBytes').text(formatBytes(totalRxBytes));
+					$('#3_10_totalTxBytes').text(formatBytes(totalTxBytes));
+					metadata_percentage = (metadata_percentage*100).toFixed(2);
+					$('#3_10_metadata_percentage').text(metadata_percentage);
+					$('#3_10_metadata_traffic').text(formatBytes(metadata_traffic));
+					$('#3_10_metadata_totalTraffic').text(formatBytes(metadata_totalTraffic));
+				}else{
+					msgBox("取得資料時失敗：" + data.resultText);
+				}
+			}
+
+		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
+	}
 </script>

@@ -25,36 +25,41 @@ out.clear();	//注意，一定要有out.clear();，要不然client端無法解�
 JSONObject	obj=new JSONObject();
 
 /*********************開始做事吧*********************/
+String startDate	= nullToString(request.getParameter("startDate"), "");
+String endDate		= nullToString(request.getParameter("endDate"), "");
 
-String uid	= request.getParameter("uid");
-String upassword	= request.getParameter("upassword");
+String uid		= (String) session.getAttribute("uid");
+String token	= (String) session.getAttribute("token");
 
-if (uid==null || uid.length()<1 || upassword==null || upassword.length()<1){
-	obj.put("resultCode", gcResultCodeParametersNotEnough);
-	obj.put("resultText", gcResultTextParametersNotEnough);
+if (beEmpty(uid) || beEmpty(token)){
+	obj.put("resultCode", gcResultCodeNoLoginInfoFound);
+	obj.put("resultText", gcResultTextNoLoginInfoFound);
 	out.print(obj);
 	out.flush();
 	return;
 }
 
+if (beEmpty(startDate)) startDate = getYesterday(gcDateFormatdashYMD);
+if (beEmpty(endDate)) endDate = getDateTimeNow(gcDateFormatdashYMD);
+startDate = java.net.URLEncoder.encode(startDate + "T00:00:00+08:00");
+endDate = java.net.URLEncoder.encode(endDate + "T23:59:59+08:00");
+
 int	i = 0;
 java.lang.Boolean	bOK = false;
-String				sResultCode	= gcResultCodeParametersValidationError;
-String				sResultText	= gcResultTextParametersValidationError;
+String				sResultCode	= gcResultCodeSuccess;
+String				sResultText	= gcResultTextSuccess;
 
-String				sciApiUrl	= gcSCIServerURL + "api/users/login";
-String				sData		= "{\"username\":\"" + gcSCIUserName + "\", \"password\":\"" + gcSCIPassword + "\"}";
+String				sciApiUrl	= "";
+String				sData		= "";
 String				sResponse	= "";
 String				ss	= "";
 
-for (i=0;i<gcUsers.length;i++){
-	if (uid.equals(gcUsers[i][0]) && upassword.equals(gcUsers[i][1])){
-		session.setAttribute("uid", uid);	//將登入用戶資料存入 session 中
-		bOK = true;
-	}
-}
-
-if (bOK){	//登入 SCI API，取得 token
+sciApiUrl = gcSCIServerURL + "api/reports/3/sections/10/data?access_token=";
+sciApiUrl += token;
+sData = "start=" + startDate;
+sData += "&end=" + endDate;
+writeLog("error", "sciApiUrl= " + sciApiUrl);
+writeLog("error", "sData= " + sData);
 	try
 	{
 		HttpsURLConnection.setDefaultHostnameVerifier(this.new NullHostNameVerifier());
@@ -64,10 +69,10 @@ if (bOK){	//登入 SCI API，取得 token
 		URL u;
 		u = new URL(sciApiUrl);
 		HttpURLConnection uc = (HttpURLConnection)u.openConnection();
-		uc.setRequestProperty ("Content-Type", "application/json");
+		//uc.setRequestProperty ("Content-Type", "application/json");
 		uc.setRequestProperty("contentType", "utf-8");
 		uc.setRequestMethod("POST");
-		//uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); 
+		uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); 
 		uc.setDoOutput(true);
 		uc.setDoInput(true);
 	
@@ -85,30 +90,22 @@ if (bOK){	//登入 SCI API，取得 token
 		}
 		in.close();
 		sResponse = buf.toString();	//取得Line回應值
-		
+		bOK = true;
 	}catch (IOException e){ 
 		sResponse = e.toString();
 		writeLog("error", "Exception when send message to SCI: " + e.toString());
 	}
 	
-	if (notEmpty(sResponse) && !sResponse.equals("{}")){
-		ss = getJsonValue(sResponse, "id");
-		if (notEmpty(ss)){
-			session.setAttribute("token", ss);	//將登入用戶資料存入 session 中
-			writeLog("info", "Successfully login to SCI, token= " + ss);
-			sResultCode	= gcResultCodeSuccess;
-			sResultText	= gcResultTextSuccess;
-		}else{
-			writeLog("error", "Failed to login SCI, response= " + sResponse);
-			sResultCode	= gcResultCodeUnknownError;
-			sResultText	= gcResultTextUnknownError;
-		}
+	if (bOK){
+		writeLog("info", "sResponse= " + sResponse);
+		sResultCode	= gcResultCodeSuccess;
+		sResultText	= gcResultTextSuccess;
+		obj.put("records", sResponse);
 	}else{
-		writeLog("error", "Failed to login to SCI: " + sResponse);
+		writeLog("error", "Failed to get data from SCI: " + sResponse);
 		sResultCode	= gcResultCodeUnknownError;
-		sResultText	= sResponse;
+		sResultText	= (beEmpty(sResponse)?gcResultTextUnknownError:sResponse);
 	}
-}	//if (bOK){	//登入 SCI API，取得 token
 
 
 obj.put("resultCode", sResultCode);

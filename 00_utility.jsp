@@ -497,170 +497,20 @@ public String getSequence(String dbName){	//取的新的序號
 }
 
 /*********************************************************************************************************************/
-
-//發送HTML格式的信件(含附件)
-public java.lang.Boolean sendHTMLMail(String sFromEmail, String sFromName, String sToEmail, String sSubject, String sBody){
-	return sendHTMLMail(sFromEmail, sFromName, sToEmail, sSubject, sBody, "", "", "", "");
-}
-public java.lang.Boolean sendHTMLMail(String sFromEmail, String sFromName, String sToEmail, String sSubject, String sBody, String sFiles){
-	return sendHTMLMail(sFromEmail, sFromName, sToEmail, sSubject, sBody, sFiles, "", "", "");
-}
-public java.lang.Boolean sendHTMLMail(String sFromEmail, String sFromName, String sToEmail, String sSubject, String sBody, String sFiles, String sCc){
-	return sendHTMLMail(sFromEmail, sFromName, sToEmail, sSubject, sBody, sFiles, sCc, "", "");
-}
-public java.lang.Boolean sendHTMLMail(String sFromEmail, String sFromName, String sToEmail, String sSubject, String sBody, String sFiles, String sCc, String sBcc, String sLogo){
-	/*************************************************************************
-		sFromEmail:		寄件者的 email address
-		sFromName:		寄件者名稱，若輸入空字串則設為與 sFromEmail 相同值
-		sToEmail:		收件人 email address，若有多個收件人則以【;】區隔
-		sSubject:		信件主旨
-		sBody:			信件內容 HTML，從<html><head>至</body></html>
-		sFiles:			附件
-		sCc:			CC的 email address，若有多個BCC收件人則以【;】區隔
-		sBcc:			BCC的 email address，若有多個BCC收件人則以【;】區隔
-		sLogo:			Logo圖檔的路徑檔名
-		回覆值:			執行成功回覆 true，失敗時回覆 false
-	*************************************************************************/
-	java.lang.Boolean	bOK		= true;
-	String[]			aTo		= null;
-	String[]			aCc	= null;
-	String[]			aBcc	= null;
-	String[]			aFile	= null;
-	int					i		= 0;
-	
-	String				sSMTPServer			= gcDefaultEmailSMTPServer;
-	int					iSMTPServerPort		= gcDefaultEmailSMTPServerPort;
-	String				sSMTPServerUserName	= gcDefaultEmailSMTPServerUserName;
-	String				sSMTPServerPassword	= gcDefaultEmailSMTPServerPassword;
-	
-	if (beEmpty(sFromEmail) || beEmpty(sFromName) || beEmpty(sToEmail) || beEmpty(sSubject) || beEmpty(sBody)){
-		return false;
-	}
-	
-	sToEmail = sToEmail.replace(",", ";");
-	aTo = sToEmail.split(";");
-	if (aTo.length<1){
-		return false;
-	}
-	
-	//CC 收件人
-	if (notEmpty(sCc)){
-		sCc = sCc.replace(",", ";");
-		aCc = sCc.split(";");
-	}
-
-	//BCC 收件人
-	if (notEmpty(sBcc)){
-		sBcc = sBcc.replace(",", ";");
-		aBcc = sBcc.split(";");
-	}
-
-	//附件
-	if (notEmpty(sFiles)){
-		aFile = sFiles.split(";");
-	}
-	
+public String getJsonValue(String jsonString, String name){
+	if (beEmpty(jsonString) || beEmpty(name)) return "";
+	//解析JSON參數
+	Object objBody = null;
 	try{
-		try{
-			Properties props = new Properties();
-			//以下是 AWS 設定
-			props.put("mail.transport.protocol", "smtp");
-			props.put("mail.smtp.port", iSMTPServerPort);
-			props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.starttls.enable", "true");
-			props.put("mail.smtp.starttls.required", "true");
-			
-			/*
-			props.put("mail.smtp.host", sSMTPServer);
-			//props.put("mail.smtp.auth", "true");	//需要認證則為 true，記得在transport.connect的後兩個參數填入 id、pwd
-			*/
-
-			Session s = Session.getInstance(props);
-			//s.setDebug(true);	//需要 debug 時再打開
-			
-			javax.mail.internet.MimeMessage message = new MimeMessage(s);
-			
-			//設定發信人/收信人/主題/發信時間
-			if (beEmpty(sFromName)) sFromName = sFromEmail;
-			InternetAddress from = new InternetAddress(sFromEmail, sFromName, "utf-8");
-			message.setFrom(from);
-			//message.setSender(new InternetAddress(sFromEmail));
-			/*
-			InternetAddress[] replyAddrs = new InternetAddress[1];
-			replyAddrs[0] = new InternetAddress(sFromEmail, sFromName, "utf-8");
-			message.setReplyTo(replyAddrs);
-			*/
-			
-			InternetAddress[] mailAddrs = new InternetAddress[aTo.length];
-			for (i=0;i<aTo.length;i++){
-				 mailAddrs[i] = new InternetAddress(aTo[i].toLowerCase(), aTo[i], "utf-8");	//第一個參數是email，第二個參數是收件人名稱，第三個參數是encoding
-			}
-			message.setRecipients(javax.mail.Message.RecipientType.TO, mailAddrs);
-			
-			if (aCc!=null && aCc.length>0){	//CC收件人
-				InternetAddress[] mailAddrsCc = new InternetAddress[aCc.length];
-				for (i=0;i<aCc.length;i++){
-					 mailAddrsCc[i] = new InternetAddress(aCc[i].toLowerCase(), aCc[i], "utf-8");	//第一個參數是email，第二個參數是收件人名稱，第三個參數是encoding
-				}
-				message.setRecipients(javax.mail.Message.RecipientType.CC, mailAddrsCc);
-			}	//if (aCc!=null && aCc.length>0){	//CC收件人
-
-			if (aBcc!=null && aBcc.length>0){	//BCC收件人
-				InternetAddress[] mailAddrsBcc = new InternetAddress[aBcc.length];
-				for (i=0;i<aBcc.length;i++){
-					 mailAddrsBcc[i] = new InternetAddress(aBcc[i].toLowerCase(), aBcc[i], "utf-8");	//第一個參數是email，第二個參數是收件人名稱，第三個參數是encoding
-				}
-				message.setRecipients(javax.mail.Message.RecipientType.BCC, mailAddrsBcc);
-			}	//if (aBcc!=null && aBcc.length>0){	//BCC收件人
-			
-			message.setSubject(sSubject, "utf-8");
-			message.setSentDate(new java.util.Date());
-			
-			//給消息對像設置內容
-			BodyPart mdp = new MimeBodyPart();//新建一個存放信件內容的BodyPart對像
-			mdp.setContent(sBody, "text/html;charset=utf-8");//給BodyPart對像設置內容和格式/編碼方式
-			Multipart mm = new MimeMultipart();//新建一個MimeMultipart對像用來存放BodyPart對象(事實上可以存放多個)
-			mm.addBodyPart(mdp);//將BodyPart加入到MimeMultipart對像中(可以加入多個BodyPart)
-			
-			//設定附件
-			if (aFile!=null && aFile.length>0){	//可能有多個附件
-				for (i=0;i<aFile.length;i ++ ){
-					mdp = new  MimeBodyPart(); 
-					FileDataSource fileds = new  FileDataSource (aFile[i]); 
-					mdp.setDataHandler( new  DataHandler(fileds)); 
-					mdp.setFileName(fileds.getName()); 
-					mm.addBodyPart(mdp); 
-				} 
-			}	//if (aFile!=null && aFile.length>0){	//可能有多個附件
-
-			// 加入公司logo，放在mai body中 <img src="cid:image"> 指定的位置
-			if (notEmpty(sLogo)){
-				mdp = new MimeBodyPart();
-				FileDataSource fds = new FileDataSource(sLogo);
-				mdp.setDataHandler(new DataHandler(fds));
-				mdp.setHeader("Content-ID", "<image>");
-				mm.addBodyPart(mdp);
-			}
-
-			message.setContent(mm);//把mm作為消息對象的內容
-			
-			message.saveChanges();
-			Transport transport = s.getTransport("smtp");
-			transport.connect(sSMTPServer, sSMTPServerUserName, sSMTPServerPassword);	//AWS
-			transport.sendMessage(message, message.getAllRecipients());
-			transport.close();
-		}catch(UnsupportedEncodingException e){
-			bOK = false;
-		}
-	}catch(javax.mail.MessagingException e){
-		writeLog("error", "sendHTMLMail 失敗:" + e.toString());
-		bOK = false;
+		JSONParser parser = new JSONParser();
+		objBody = parser.parse(jsonString);
+	} catch (Exception e) {
+		//e.printStackTrace();
+		return null;
 	}
-	if (!bOK) writeLog("error", "Send Mail 失敗||To=" + sToEmail + "||CC=" + sCc + "||BCC=" + sBcc + "||Subject=" + sSubject);
-	return bOK;
+	return getJsonValue(objBody, name);
 }
 
-/*********************************************************************************************************************/
 public String getJsonValue(Object obj, String name){
 	if (obj==null || name==null) return null;
 	String value = "";
