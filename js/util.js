@@ -20,6 +20,8 @@ function notEmpty(s){
 
 /**********將浮點數字改為以K、MB、GB為單位**********/
 function formatBytes(bytes){
+	if (isNaN(bytes)) return '0';
+
 	var s = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
 	var e = Math.floor(Math.log(bytes)/Math.log(1024 ));
 	return (bytes/ Math.pow(1024 , Math.floor(e))).toFixed(2 )+" "+s[e];
@@ -35,6 +37,7 @@ function toCurrency(s){
 	var k = 0;
 	var l = 0;
 	var s2 = "";
+	s = s.toString();
 	s = trim(s);
 	i = s.length;			//i為字串長度
 	if (i<4) return s;		//長度太短，不用加逗點，直接回覆原字串

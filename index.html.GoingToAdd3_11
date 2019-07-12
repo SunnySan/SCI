@@ -38,7 +38,7 @@
 	<!-- Google Font -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition skin-blue sidebar-mini fixed sidebar-collapse">
+<body class="hold-transition skin-blue sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
 
@@ -175,18 +175,12 @@
 								<input type="hidden" id="endDate" value="">
 							</div><!-- /.form group -->				
 						</div><!-- ./col -->
-
-						<div class="col-lg-4 col-xs-12">
-							<div class="form-group">
-								<div><label>&nbsp;</label></div>
-								<button type="button" class="btn btn-block btn-primary" onclick="getAllReports();">確認</button>
-							</div><!-- /.form group -->				
-						</div><!-- ./col -->
 					</div><!-- ./row -->
 
 				</div><!-- /.box-body -->
 
 				<div class="box-footer">
+					<button type="button" class="btn btn-primary" onclick="getAllReports();">確認</button>
 				</div><!-- /.box-footer-->
 
 			</div><!-- /.box -->
@@ -272,8 +266,8 @@
 			<!-- Default box -->
 			<div class="box">
 				<div class="box-header with-border">
-					<h3 class="box-title col-xs-8">Top 10 Applications by Traffic Volume</h3>
-					<div class="box-tools pull-right col-xs-4">
+					<h3 class="box-title">Top 10 Applications by Traffic Volume</h3>
+					<div class="box-tools pull-right">
 						<div class="form-group col-xs-6">
 							<select id="sel3_7_metric" class="form-control" onchange="getReport3_7();">
 								<option selected value="traffic">User Traffic</option>
@@ -283,8 +277,8 @@
 						</div>
 						<div class="form-group col-xs-4">
 							<select id="sel3_7_granularity" class="form-control" onchange="getReport3_7();">
-								<option selected value="fifteen_minute">15分</option>
-								<option value="thirty_minute">30分</option>
+								<option selected value="fifteen_minute">15分鐘</option>
+								<option value="thirty_minute">30分鐘</option>
 								<option value="hour">1小時</option>
 								<option value="day">1天</option>
 							</select>
@@ -307,49 +301,6 @@
 						<div class="col-lg-6 col-xs-12">
 							<!-- Line chart -->
 							<div id="chart_3_7_2" style="height: 400px"></div>
-						</div><!-- ./col -->
-
-					</div><!-- ./row -->
-
-				</div><!-- /.box-body -->
-			</div><!-- /.box -->
-
-
-
-
-
-
-			<!-- Default box -->
-			<div class="box">
-				<div class="box-header with-border">
-					<h3 class="box-title">Top 10 Applications by Client Count</h3>
-					<div class="box-tools pull-right">
-						<div class="form-group col-xs-8">
-							<select id="sel3_11_granularity" class="form-control" onchange="getReport3_11();">
-								<option selected value="fifteen_minute">15分</option>
-								<option value="thirty_minute">30分</option>
-								<option value="hour">1小時</option>
-								<option value="day">1天</option>
-							</select>
-						</div>
-						<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
-						<i class="fa fa-minus"></i></button>
-						<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-						<i class="fa fa-times"></i></button>
-					</div>
-				</div><!-- Box header -->
-				<div class="box-body">
-
-					<!-- Small boxes (Stat box) -->
-					<div class="row">
-						<div class="col-lg-6 col-xs-12">
-							<!-- Pie chart -->
-							<div id="chart_3_11_1" style="height: 400px"></div>
-						</div><!-- ./col -->
-
-						<div class="col-lg-6 col-xs-12">
-							<!-- Line chart -->
-							<div id="chart_3_11_2" style="height: 400px"></div>
 						</div><!-- ./col -->
 
 					</div><!-- ./row -->
@@ -546,7 +497,6 @@
 		clearAllReport();
 		getReport3_10();
 		getReport3_7();
-		getReport3_11();
 	}
 
 	function getReport3_10(){
@@ -603,7 +553,13 @@
 
 	function getReport3_7(){
 
+		var applications = 0.0;
+		var totalRxBytes = 0.0;
+		var totalTxBytes = 0.0;
+		var totalTraffic = 0.0;
 		var metadata_totalTraffic = 0.0;
+		var metadata_traffic = 0.0;
+		var metadata_percentage = 0.0;
 		
 		var sData = generateQueryString("3", "7");
 		sData += "&metric=" + $('#sel3_7_metric').val();
@@ -631,6 +587,7 @@
 						var t8 = [];
 						var t9 = [];
 						var t10 = [];
+						var totalTraffic = 0;
 						$.each( records.data, function(i, r) {
 							if (i==0){
 								$.each( r, function(i1, r1) {
@@ -638,6 +595,7 @@
 									jsonData["name"]=r1.app;
 									jsonData["y"]=r1.totalTraffic;
 									jsonData["vol"]=formatBytes(r1.totalTraffic);
+									totalTraffic += r1.totalTraffic;
 									/*
 									if (i1==0){
 										jsonData["sliced"]=true;
@@ -668,7 +626,7 @@
 								//console.log("time= "+JSON.stringify(time));
 							}	//if (i==1){
 						});	//$.each( data.orders, function(i, r) {
-						metadata_totalTraffic = records.metadata.totalTraffic;
+
 						//Pie chart
 						Highcharts.chart('chart_3_7_1', {
 							chart: {
@@ -678,7 +636,7 @@
 								type: 'pie'
 							},
 							title: {
-								text: $("#sel3_7_metric option:selected").text() + " 共 " + formatBytes(metadata_totalTraffic)
+								text: $("#sel3_7_metric option:selected").text() + " 共 " + formatBytes(totalTraffic)
 							},
 							tooltip: {
 								pointFormat: '{series.name}: <b>{point.vol}</b>'
@@ -691,9 +649,7 @@
 										enabled: true,
 										format: '{point.name}',
 										style: {
-											color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
-											fontWeight: 'normal',
-											fontSize: '14px'
+											color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
 										}
 									}
 								}
@@ -701,60 +657,52 @@
 							series: [seriesData]
 						});
 
+
+
+
+
+
 						//Line chart
-						var myLabel = {};
-						myLabel["enabled"]=false;
-						
 						var ar = [];
 						jsonData = {};
 						jsonData["name"]=seriesData.data[0].name;
 						jsonData["data"]=t1;
-						jsonData["label"]=myLabel;
 						ar.push(jsonData);
 						jsonData = {};
 						jsonData["name"]=seriesData.data[1].name;
 						jsonData["data"]=t2;
-						jsonData["label"]=myLabel;
 						ar.push(jsonData);
 						jsonData = {};
 						jsonData["name"]=seriesData.data[2].name;
 						jsonData["data"]=t3;
-						jsonData["label"]=myLabel;
 						ar.push(jsonData);
 						jsonData = {};
 						jsonData["name"]=seriesData.data[3].name;
 						jsonData["data"]=t4;
-						jsonData["label"]=myLabel;
 						ar.push(jsonData);
 						jsonData = {};
 						jsonData["name"]=seriesData.data[4].name;
 						jsonData["data"]=t5;
-						jsonData["label"]=myLabel;
 						ar.push(jsonData);
 						jsonData = {};
 						jsonData["name"]=seriesData.data[5].name;
 						jsonData["data"]=t6;
-						jsonData["label"]=myLabel;
 						ar.push(jsonData);
 						jsonData = {};
 						jsonData["name"]=seriesData.data[6].name;
 						jsonData["data"]=t7;
-						jsonData["label"]=myLabel;
 						ar.push(jsonData);
 						jsonData = {};
 						jsonData["name"]=seriesData.data[7].name;
 						jsonData["data"]=t8;
-						jsonData["label"]=myLabel;
 						ar.push(jsonData);
 						jsonData = {};
 						jsonData["name"]=seriesData.data[8].name;
 						jsonData["data"]=t9;
-						jsonData["label"]=myLabel;
 						ar.push(jsonData);
 						jsonData = {};
 						jsonData["name"]=seriesData.data[9].name;
 						jsonData["data"]=t10;
-						jsonData["label"]=myLabel;
 						ar.push(jsonData);
 						//console.log(JSON.stringify(ar));
 
@@ -797,12 +745,9 @@
 							series: ar,
 							plotOptions: {
 								series: {
-									dataLabels: {
-										enabled: false
-									},
 									lineWidth: 1,
 									marker: {
-										enabled: false
+										lineWidth: 1
 									}
 								}
 							},
@@ -820,234 +765,8 @@
 							}
 						});
 
-					}catch( e){
-						msgBox("資料解析失敗，找不到資料!"+e.toString());
-					}
-				}else{
-					msgBox("取得資料時失敗：" + data.resultText);
-				}
-			}
 
-		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
-	}
 
-	function getReport3_11(){
-
-		var metadata_totalClients = 0.0;
-		
-		var sData = generateQueryString("3", "11");
-		sData += "&granularity=" + $('#sel3_11_granularity').val();
-		//console.log(sData);
-
-		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
-			if (!data.resultCode || !data.resultText){
-				msgBox("無法取得資料");
-				return;
-			}else{
-				if (data.resultCode=="00000"){
-					var records = JSON.parse(data.records);
-					try{
-						var seriesData = { name: 'Clients',colorByPoint: true,data:[]};
-						var jsonData = {};
-						var time = [];
-						var t1 = [];
-						var t2 = [];
-						var t3 = [];
-						var t4 = [];
-						var t5 = [];
-						var t6 = [];
-						var t7 = [];
-						var t8 = [];
-						var t9 = [];
-						var t10 = [];
-						$.each( records.data, function(i, r) {
-							if (i==0){
-								$.each( r, function(i1, r1) {
-									jsonData = {};
-									jsonData["name"]=r1.app;
-									jsonData["y"]=Math.round(r1.uniqueUsers);
-									jsonData["vol"]=Math.round(r1.uniqueUsers);
-									/*
-									if (i1==0){
-										jsonData["sliced"]=true;
-										jsonData["selected"]=true;
-									}
-									*/
-									//alert(JSON.stringify(jsonData));
-									seriesData.data.push(jsonData);
-								});
-							}	//if (i==0){
-							
-							if (i==1){
-								$.each( r, function(i1, r1) {
-									t1.push(Math.round(r1[seriesData.data[0].name]));
-									t2.push(Math.round(r1[seriesData.data[1].name]));
-									t3.push(Math.round(r1[seriesData.data[2].name]));
-									t4.push(Math.round(r1[seriesData.data[3].name]));
-									t5.push(Math.round(r1[seriesData.data[4].name]));
-									t6.push(Math.round(r1[seriesData.data[5].name]));
-									t7.push(Math.round(r1[seriesData.data[6].name]));
-									t8.push(Math.round(r1[seriesData.data[7].name]));
-									t9.push(Math.round(r1[seriesData.data[8].name]));
-									t10.push(Math.round(r1[seriesData.data[9].name]));
-									var localTime = moment.utc(r1.start).local().format('YYYY-MM-DD HH:mm');
-									//console.log("localTime= "+localTime);
-									time.push(localTime);
-								});
-								//console.log("time= "+JSON.stringify(time));
-							}	//if (i==1){
-						});	//$.each( data.orders, function(i, r) {
-						metadata_totalClients = Math.round(records.metadata.totalClients);
-						//Pie chart
-						Highcharts.chart('chart_3_11_1', {
-							chart: {
-								plotBackgroundColor: null,
-								plotBorderWidth: null,
-								plotShadow: false,
-								type: 'pie'
-							},
-							title: {
-								text: "Clients 共 " + toCurrency(metadata_totalClients)
-							},
-							tooltip: {
-								pointFormat: '{series.name}: <b>{point.vol}</b>'
-							},
-							plotOptions: {
-								pie: {
-									allowPointSelect: true,
-									cursor: 'pointer',
-									dataLabels: {
-										enabled: true,
-										format: '{point.name}',
-										style: {
-											color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
-											fontWeight: 'normal',
-											fontSize: '14px'
-										}
-									}
-								}
-							},
-							series: [seriesData]
-						});
-
-						//Line chart
-						var myLabel = {};
-						myLabel["enabled"]=false;
-
-						var ar = [];
-						jsonData = {};
-						jsonData["name"]=seriesData.data[0].name;
-						jsonData["data"]=t1;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[1].name;
-						jsonData["data"]=t2;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[2].name;
-						jsonData["data"]=t3;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[3].name;
-						jsonData["data"]=t4;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[4].name;
-						jsonData["data"]=t5;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[5].name;
-						jsonData["data"]=t6;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[6].name;
-						jsonData["data"]=t7;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[7].name;
-						jsonData["data"]=t8;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[8].name;
-						jsonData["data"]=t9;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[9].name;
-						jsonData["data"]=t10;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						//console.log(JSON.stringify(ar));
-
-						//Line chart
-						Highcharts.chart('chart_3_11_2', {
-							title: {
-								text: ''
-							},
-							yAxis: {
-								title: {
-									text: 'Clients'
-								}
-							},
-							xAxis: {
-								title: {
-									text: 'Time'
-								},
-								accessibility: {
-									description: ''
-								},
-								categories: time
-							},
-							tooltip: {
-								formatter: function() {
-									tooltip_html = "<b>" + this.x + "</b>";
-									tooltip_html += "<table>";
-									this.points.forEach(function(entry){
-										tooltip_html += '<tr><td style="font-size:20px; font-weight:bold; color:'+ entry.series.color +'">\u25FC</td><td>'+ entry.series.name +'</td><td style="text-align: right"><b>' + entry.y +'</b></td></tr>';
-									});
-									tooltip_html += "</table>";
-									return tooltip_html;
-              					},
-								shared: true,
-								useHTML: true,
-								crosshairs: true
-							},
-							legend: {
-								enabled: false
-							},
-							series: ar,
-							plotOptions: {
-								series: {
-									dataLabels: {
-										enabled: false
-									},
-									lineWidth: 1,
-									marker: {
-										enabled: false
-									}
-								}
-							},
-							responsive: {
-								rules: [{
-									condition: {
-										maxWidth: 500
-									},
-									chartOptions: {
-										legend: {
-											enabled: false
-										}
-									}
-								}]
-							}
-						});
 
 					}catch( e){
 						msgBox("資料解析失敗，找不到資料!"+e.toString());
