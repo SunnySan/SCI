@@ -14,7 +14,7 @@
 	<link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
 	<!-- Ionicons -->
 	<link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
-
+	
 	<!-- Select2 -->
 	<link rel="stylesheet" href="bower_components/select2/dist/css/select2.min.css">	
 	<!-- daterange picker -->
@@ -257,6 +257,61 @@
 
 				</div><!-- /.box-body -->
 			</div><!-- /.box -->
+
+
+
+
+
+
+			<!-- Default box -->
+			<div class="box">
+				<div class="box-header with-border">
+					<h3 class="box-title">Top 10 Applications by Traffic Volume</h3>
+					<div class="box-tools pull-right">
+						<div class="form-group col-xs-6">
+							<select id="sel3_7_metric" class="form-control" onchange="getReport3_7();">
+								<option selected value="traffic">User Traffic</option>
+								<option value="rxBytes">Rx User</option>
+								<option value="txBytes">Tx User</option>
+							</select>
+						</div>
+						<div class="form-group col-xs-4">
+							<select id="sel3_7_granularity" class="form-control" onchange="getReport3_7();">
+								<option selected value="fifteen_minute">15分鐘</option>
+								<option value="thirty_minute">30分鐘</option>
+								<option value="hour">1小時</option>
+								<option value="day">1天</option>
+							</select>
+						</div>
+						<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
+						<i class="fa fa-minus"></i></button>
+						<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+						<i class="fa fa-times"></i></button>
+					</div>
+				</div><!-- Box header -->
+				<div class="box-body">
+
+					<!-- Small boxes (Stat box) -->
+					<div class="row">
+						<div class="col-lg-6 col-xs-12">
+							<!-- Pie chart -->
+							<div id="chart_3_7_1" style="height: 400px"></div>
+						</div><!-- ./col -->
+
+						<div class="col-lg-6 col-xs-12">
+							<!-- Line chart -->
+							<div id="chart_3_7_2" style="height: 400px"></div>
+						</div><!-- ./col -->
+
+					</div><!-- ./row -->
+
+				</div><!-- /.box-body -->
+			</div><!-- /.box -->
+
+
+
+
+
 			
 		</section><!-- /.content -->
 	</div><!-- /.content-wrapper -->
@@ -289,6 +344,11 @@
 <!-- date-range-picker -->
 <script src="bower_components/moment/min/moment.min.js"></script>
 <script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<!-- Highcharts -->
+<script src="bower_components/highcharts/highcharts.js"></script>
+<script src="bower_components/highcharts/modules/series-label.js"></script>
+<script src="bower_components/highcharts/modules/exporting.js"></script>
+<script src="bower_components/highcharts/modules/export-data.js"></script>
 
 <script type="text/javascript" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/util.js"></script>
@@ -344,6 +404,9 @@
 		);
 		getTribeApList();
 		getAllReports();
+
+
+
 	}
 
 	var tribeList = null;
@@ -388,8 +451,8 @@
 		var filterData = { "type":"or","fields":[]};
 		var jsonData = {};
 		
-		sData = "reportId=3";
-		sData += "&section=10";
+		sData = "reportId=" + reportId;
+		sData += "&section=" + section;
 		sData += "&startDate=" + startDate;
 		sData += "&endDate=" + endDate;
 		
@@ -433,6 +496,7 @@
 	function getAllReports(){
 		clearAllReport();
 		getReport3_10();
+		getReport3_7();
 	}
 
 	function getReport3_10(){
@@ -486,8 +550,237 @@
 
 		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
+
+	function getReport3_7(){
+
+		var applications = 0.0;
+		var totalRxBytes = 0.0;
+		var totalTxBytes = 0.0;
+		var totalTraffic = 0.0;
+		var metadata_totalTraffic = 0.0;
+		var metadata_traffic = 0.0;
+		var metadata_percentage = 0.0;
+		
+		var sData = generateQueryString("3", "7");
+		sData += "&metric=" + $('#sel3_7_metric').val();
+		sData += "&granularity=" + $('#sel3_7_granularity').val();
+		//console.log(sData);
+
+		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
+			if (!data.resultCode || !data.resultText){
+				msgBox("無法取得資料");
+				return;
+			}else{
+				if (data.resultCode=="00000"){
+					var records = JSON.parse(data.records);
+					try{
+						var seriesData = { name: $("#sel3_7_metric option:selected").text(),colorByPoint: true,data:[]};
+						var jsonData = {};
+						var time = [];
+						var t1 = [];
+						var t2 = [];
+						var t3 = [];
+						var t4 = [];
+						var t5 = [];
+						var t6 = [];
+						var t7 = [];
+						var t8 = [];
+						var t9 = [];
+						var t10 = [];
+						var totalTraffic = 0;
+						$.each( records.data, function(i, r) {
+							if (i==0){
+								$.each( r, function(i1, r1) {
+									jsonData = {};
+									jsonData["name"]=r1.app;
+									jsonData["y"]=r1.totalTraffic;
+									jsonData["vol"]=formatBytes(r1.totalTraffic);
+									totalTraffic += r1.totalTraffic;
+									/*
+									if (i1==0){
+										jsonData["sliced"]=true;
+										jsonData["selected"]=true;
+									}
+									*/
+									//alert(JSON.stringify(jsonData));
+									seriesData.data.push(jsonData);
+								});
+							}	//if (i==0){
+							
+							if (i==1){
+								$.each( r, function(i1, r1) {
+									t1.push(r1[seriesData.data[0].name]);
+									t2.push(r1[seriesData.data[1].name]);
+									t3.push(r1[seriesData.data[2].name]);
+									t4.push(r1[seriesData.data[3].name]);
+									t5.push(r1[seriesData.data[4].name]);
+									t6.push(r1[seriesData.data[5].name]);
+									t7.push(r1[seriesData.data[6].name]);
+									t8.push(r1[seriesData.data[7].name]);
+									t9.push(r1[seriesData.data[8].name]);
+									t10.push(r1[seriesData.data[9].name]);
+									time.push(r1.start);
+								});
+							}	//if (i==1){
+						});	//$.each( data.orders, function(i, r) {
+
+						//Pie chart
+						Highcharts.chart('chart_3_7_1', {
+							chart: {
+								plotBackgroundColor: null,
+								plotBorderWidth: null,
+								plotShadow: false,
+								type: 'pie'
+							},
+							title: {
+								text: $("#sel3_7_metric option:selected").text() + " " + formatBytes(totalTraffic)
+							},
+							tooltip: {
+								pointFormat: '{series.name}: <b>{point.vol}</b>'
+							},
+							plotOptions: {
+								pie: {
+									allowPointSelect: true,
+									cursor: 'pointer',
+									dataLabels: {
+										enabled: true,
+										format: '{point.name}',
+										style: {
+											color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+										}
+									}
+								}
+							},
+							series: [seriesData]
+						});
+
+
+
+
+
+
+						//Line chart
+						var ar = [];
+						jsonData = {};
+						jsonData["name"]=seriesData.data[0].name;
+						jsonData["data"]=t1;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[1].name;
+						jsonData["data"]=t2;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[2].name;
+						jsonData["data"]=t3;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[3].name;
+						jsonData["data"]=t4;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[4].name;
+						jsonData["data"]=t5;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[5].name;
+						jsonData["data"]=t6;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[6].name;
+						jsonData["data"]=t7;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[7].name;
+						jsonData["data"]=t8;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[8].name;
+						jsonData["data"]=t9;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[9].name;
+						jsonData["data"]=t10;
+						ar.push(jsonData);
+						console.log(JSON.stringify(ar));
+Highcharts.chart('chart_3_7_2', {
+
+    title: {
+        text: 'Solar Employment Growth by Sector, 2010-2016'
+    },
+
+    subtitle: {
+        text: 'Source: thesolarfoundation.com'
+    },
+
+    yAxis: {
+        title: {
+            text: 'Number of Employees'
+        }
+    },
+    xAxis: {
+        title: {
+            text: 'Time'
+        },
+        accessibility: {
+            description: 'Time from January 2009 to July 2015'
+        },
+        categories: time
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            },
+            pointStart: 2010
+        }
+    },
+
+    series: ar,
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+});
+
+
+
+
+
+
+
+					}catch( e){
+						msgBox("資料解析失敗，找不到資料!"+e.toString());
+					}
+				}else{
+					msgBox("取得資料時失敗：" + data.resultText);
+				}
+			}
+
+		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
+	}
 	
 	function clearAllReport(){
 		$('.reportdata').text("");
 	}	//function clearAllReport(){
 </script>
+
+
+

@@ -30,6 +30,8 @@ String section		= nullToString(request.getParameter("section"), "");
 String startDate	= nullToString(request.getParameter("startDate"), "");
 String endDate		= nullToString(request.getParameter("endDate"), "");
 String filter		= nullToString(request.getParameter("filter"), "");
+String metric		= nullToString(request.getParameter("metric"), "");
+String granularity	= nullToString(request.getParameter("granularity"), "");
 
 String uid		= (String) session.getAttribute("uid");
 String token	= (String) session.getAttribute("token");
@@ -68,6 +70,9 @@ sciApiUrl = gcSCIServerURL + "api/reports/" + reportId + "/sections/" + section 
 sData = "start=" + startDate;
 sData += "&end=" + endDate;
 if (notEmpty(filter)) sData += "&filter=" + filter;
+if (notEmpty(metric)) sData += "&metric=" + metric;
+if (notEmpty(granularity)) sData += "&granularity=" + granularity;
+
 writeLog("debug", "sciApiUrl= " + sciApiUrl);
 writeLog("debug", "sData= " + sData);
 try{
