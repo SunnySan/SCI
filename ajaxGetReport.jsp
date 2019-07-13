@@ -32,6 +32,7 @@ String endDate		= nullToString(request.getParameter("endDate"), "");
 String filter		= nullToString(request.getParameter("filter"), "");
 String metric		= nullToString(request.getParameter("metric"), "");
 String granularity	= nullToString(request.getParameter("granularity"), "");
+String limit		= nullToString(request.getParameter("limit"), "");
 
 String uid		= (String) session.getAttribute("uid");
 String token	= (String) session.getAttribute("token");
@@ -72,6 +73,7 @@ sData += "&end=" + endDate;
 if (notEmpty(filter)) sData += "&filter=" + filter;
 if (notEmpty(metric)) sData += "&metric=" + metric;
 if (notEmpty(granularity)) sData += "&granularity=" + granularity;
+if (notEmpty(limit)) sData += "&limit=" + limit;
 
 writeLog("debug", "sciApiUrl= " + sciApiUrl);
 writeLog("debug", "sData= " + sData);

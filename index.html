@@ -19,7 +19,10 @@
 	<link rel="stylesheet" href="bower_components/select2/dist/css/select2.min.css">	
 	<!-- daterange picker -->
 	<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
-
+	<!-- DataTables -->
+	<link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" href="bower_components/datatables.net/css/buttons.dataTables.min.css">
+  
 	<!-- Theme style -->
 	<link rel="stylesheet" href="dist/css/AdminLTE.min.css">
 	<!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -37,6 +40,16 @@
 	
 	<!-- Google Font -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+	<style type="text/css">
+		.dt-body-right {
+			text-align:right; 
+		} 
+		.dt-body-center {
+			text-align:center; 
+		} 
+	</style> 
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed sidebar-collapse">
 <!-- Site wrapper -->
@@ -361,6 +374,121 @@
 
 
 
+
+
+			<!-- Default box -->
+			<div class="box">
+				<div class="box-header with-border">
+					<h3 class="box-title col-xs-10">Top Applications by Traffic&nbsp;&nbsp;<small>These applications consume <span id="3_8_metadata_percentage"></span> % ( <span id="3_8_metadata_traffic"></span> ) of the total traffic ( <span id="3_8_metadata_totalTraffic"></span> ).</small></h3>
+					<div class="box-tools pull-right col-xs-2">
+						<div class="form-group col-xs-8">
+							<select id="sel3_8_limit" class="form-control" onchange="getReport3_8();">
+								<option value="0">All</option>
+								<option selected value="10">Top 10</option>
+								<option value="20">Top 20</option>
+								<option value="50">Top 50</option>
+								<option value="100">Top 100</option>
+							</select>
+						</div>
+						<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
+						<i class="fa fa-minus"></i></button>
+						<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+						<i class="fa fa-times"></i></button>
+					</div>
+				</div><!-- Box header -->
+				<div class="box-body">
+					<table id="tbl3_8" class="table table-bordered table-striped display">
+						<thead>
+							<tr>
+								<th>Index</th>
+								<th>應用服務名稱</th>
+								<th>Ports</th>
+								<th>Rx User</th>
+								<th>Tx User</th>
+								<th>User Traffic</th>
+								<th>Clients</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+						<tfoot>
+							<tr>
+								<th>Index</th>
+								<th>應用服務名稱</th>
+								<th>Ports</th>
+								<th>Rx User</th>
+								<th>Tx User</th>
+								<th>User Traffic</th>
+								<th>Clients</th>
+							</tr>
+						</tfoot>
+					</table>					
+
+				</div><!-- /.box-body -->
+			</div><!-- /.box -->
+
+
+
+
+
+
+
+			<!-- Default box -->
+			<div class="box">
+				<div class="box-header with-border">
+					<h3 class="box-title col-xs-10">Top Applications by Client Count&nbsp;&nbsp;<small>These applications consume <span id="3_9_metadata_percentage"></span> % ( <span id="3_9_metadata_traffic"></span> ) of the total traffic ( <span id="3_9_metadata_totalTraffic"></span> ).</small></h3>
+					<div class="box-tools pull-right col-xs-2">
+						<div class="form-group col-xs-8">
+							<select id="sel3_9_limit" class="form-control" onchange="getReport3_9();">
+								<option value="0">All</option>
+								<option selected value="10">Top 10</option>
+								<option value="20">Top 20</option>
+								<option value="50">Top 50</option>
+								<option value="100">Top 100</option>
+							</select>
+						</div>
+						<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
+						<i class="fa fa-minus"></i></button>
+						<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+						<i class="fa fa-times"></i></button>
+					</div>
+				</div><!-- Box header -->
+				<div class="box-body">
+					<table id="tbl3_9" class="table table-bordered table-striped display">
+						<thead>
+							<tr>
+								<th>Index</th>
+								<th>應用服務名稱</th>
+								<th>Ports</th>
+								<th>Clients</th>
+								<th>Rx User</th>
+								<th>Tx User</th>
+								<th>User Traffic</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+						<tfoot>
+							<tr>
+								<th>Index</th>
+								<th>應用服務名稱</th>
+								<th>Ports</th>
+								<th>Clients</th>
+								<th>Rx User</th>
+								<th>Tx User</th>
+								<th>User Traffic</th>
+							</tr>
+						</tfoot>
+					</table>					
+
+				</div><!-- /.box-body -->
+			</div><!-- /.box -->
+
+
+
+
+
+
 			
 		</section><!-- /.content -->
 	</div><!-- /.content-wrapper -->
@@ -398,6 +526,18 @@
 <script src="bower_components/highcharts/modules/series-label.js"></script>
 <script src="bower_components/highcharts/modules/exporting.js"></script>
 <script src="bower_components/highcharts/modules/export-data.js"></script>
+<!-- DataTables -->
+<script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="bower_components/datatables.net/js/percentageBars.js"></script>
+<script src="bower_components/datatables.net/js/dataTables.buttons.min.js"></script>
+<script src="bower_components/datatables.net/js/jszip.min.js"></script>
+<script src="bower_components/datatables.net/js/pdfmake.min.js"></script>
+<script src="bower_components/datatables.net/js/vfs_fonts.js"></script>
+<script src="bower_components/datatables.net/js/buttons.html5.min.js"></script>
+<script src="bower_components/datatables.net/js/buttons.colVis.min.js"></script>
+<script src="bower_components/datatables.net/js/buttons.print.min.js"></script>
+
 
 <script type="text/javascript" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/util.js"></script>
@@ -451,6 +591,28 @@
 				$('#endDate').val(end.format('YYYY-MM-DD'));
 			}
 		);
+		
+		/*
+		tbl3_8 = $('#tbl3_8').DataTable({
+			'paging'      : true,
+			'lengthChange': false,
+			'searching'   : false,
+			'ordering'    : true,
+			'info'        : true,
+			'autoWidth'   : false,
+			'data': tbl3_8_records,
+			'columns': [
+				{ "data": "index" },
+				{ "data": "app" },
+				{ "data": "port" },
+				{ "data": "rxBytes" },
+				{ "data": "txBytes" },
+				{ "data": "traffic" },
+				{ "data": "clientCount" }
+			]
+		})
+		*/
+		
 		getTribeApList();
 		getAllReports();
 
@@ -487,9 +649,10 @@
 		});
 		$('#ap option').get(0).selected = true;
 	}
-</script>
 
-<script>
+
+
+
 	function generateQueryString(reportId, section){	//產生查詢條件
 		var startDate = $('#startDate').val();
 		var endDate = $('#endDate').val();
@@ -547,6 +710,8 @@
 		getReport3_10();
 		getReport3_7();
 		getReport3_11();
+		getReport3_8();
+		getReport3_9();
 	}
 
 	function getReport3_10(){
@@ -1059,6 +1224,252 @@
 
 		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
+
+
+
+
+
+
+
+
+
+	var tbl3_8 = null;
+	var tbl3_8_records = null;
+
+	var tbl3_9 = null;
+	var tbl3_9_records = null;
+	
+	function getReport3_8(){
+		var metadata_max_traffic = 0;
+		var metadata_max_txBytes = 0;
+		var metadata_max_rxBytes = 0;
+		var metadata_totalTraffic = 0;
+		var metadata_percentage = 0;
+		var metadata_traffic = 0;
+		
+		var sData = generateQueryString("3", "8");
+		sData += "&limit=" + $('#sel3_8_limit').val();
+		//console.log(sData);
+
+		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
+			if (!data.resultCode || !data.resultText){
+				msgBox("無法取得資料");
+				return;
+			}else{
+				if (data.resultCode=="00000"){
+					var records = JSON.parse(data.records);
+					try{
+						metadata_totalTraffic = records.metadata.totalTraffic;
+						metadata_percentage = records.metadata.percentage;
+						metadata_traffic = records.metadata.traffic;
+						metadata_max_traffic = records.metadata.maxValues.traffic;
+						metadata_max_txBytes = records.metadata.maxValues.txBytes;
+						metadata_max_rxBytes = records.metadata.maxValues.rxBytes;
+						$('#3_8_metadata_percentage').text((metadata_percentage*100).toFixed(2));
+						$('#3_8_metadata_traffic').text(formatBytes(metadata_traffic));
+						$('#3_8_metadata_totalTraffic').text(formatBytes(metadata_totalTraffic));
+						tbl3_8_records = records.data;
+						if (tbl3_8==null){
+							tbl3_8 = $('#tbl3_8').DataTable({
+								'paging'      : true,
+								'lengthChange': true,
+								'searching'   : false,
+								'ordering'    : false,
+								'info'        : true,
+								'autoWidth'   : false,
+								'data': tbl3_8_records,
+								'lengthMenu': [[ 10, 25, 50, 100 ],[ 10, 25, 50, 100 ]],
+								'columns': [
+									{ "data": "index" },
+									{ "data": "app" },
+									{ "data": "port" },
+									{ "data": "rxBytes" },
+									{ "data": "txBytes" },
+									{ "data": "traffic" },
+									{ "data": "clientCount" }
+								],
+								"columnDefs": [
+									{
+										"render": $.fn.dataTable.render.percentBar( 'round','#FFF', '#269ABC', '#286090', '#31B0D5', 1, 'groove', metadata_max_rxBytes),
+										"targets": 3
+									},
+									{
+										"render": $.fn.dataTable.render.percentBar( 'round','#FFF', '#269ABC', '#286090', '#31B0D5', 1, 'groove', metadata_max_txBytes),
+										"targets": 4
+									},
+									{
+										"render": $.fn.dataTable.render.percentBar( 'round','#FFF', '#269ABC', '#286090', '#31B0D5', 1, 'groove', metadata_max_traffic),
+										"targets": 5
+									},
+									{
+										// The `data` parameter refers to the data for the cell (defined by the
+										// `data` option, which defaults to the column being worked with, in
+										// this case `data: 0`.
+										"render": function ( data, type, row ) {
+											return toCurrency(Math.round(data));
+										},
+										"targets": 6
+									},
+									{
+										"targets": 0,
+										"className": 'dt-body-center'
+									},
+									{
+										"targets": 6,
+										"className": 'dt-body-right'
+									}
+									
+								],
+								"dom": 'Blfrtip',
+								"buttons": [
+									'csvHtml5',
+									'excelHtml5',
+									'pdfHtml5'
+								]
+							})
+						}else{
+							tbl3_8.clear().draw();
+							tbl3_8.rows.add(records.data); // Add new data
+							tbl3_8.columns.adjust().draw(); // Redraw the DataTable
+						}
+/*
+								"buttons": [
+									'colvis',
+									'copyHtml5',
+									'csvHtml5',
+									'excelHtml5',
+									'pdfHtml5',
+									'print'
+								]
+
+*/						
+					}catch( e){
+						msgBox("資料解析失敗，找不到資料!"+e.toString());
+					}
+				}else{
+					msgBox("取得資料時失敗：" + data.resultText);
+				}
+			}
+
+		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
+	}
+
+
+	function getReport3_9(){
+		var metadata_max_traffic = 0;
+		var metadata_max_txBytes = 0;
+		var metadata_max_rxBytes = 0;
+		var metadata_totalTraffic = 0;
+		var metadata_percentage = 0;
+		var metadata_traffic = 0;
+		
+		var sData = generateQueryString("3", "9");
+		sData += "&limit=" + $('#sel3_9_limit').val();
+		//console.log(sData);
+
+		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
+			if (!data.resultCode || !data.resultText){
+				msgBox("無法取得資料");
+				return;
+			}else{
+				if (data.resultCode=="00000"){
+					var records = JSON.parse(data.records);
+					try{
+						metadata_totalTraffic = records.metadata.totalTraffic;
+						metadata_percentage = records.metadata.percentage;
+						metadata_traffic = records.metadata.traffic;
+						metadata_max_traffic = records.metadata.maxValues.traffic;
+						metadata_max_txBytes = records.metadata.maxValues.txBytes;
+						metadata_max_rxBytes = records.metadata.maxValues.rxBytes;
+						$('#3_9_metadata_percentage').text((metadata_percentage*100).toFixed(2));
+						$('#3_9_metadata_traffic').text(formatBytes(metadata_traffic));
+						$('#3_9_metadata_totalTraffic').text(formatBytes(metadata_totalTraffic));
+						tbl3_9_records = records.data;
+						if (tbl3_9==null){
+							tbl3_9 = $('#tbl3_9').DataTable({
+								'paging'      : true,
+								'lengthChange': true,
+								'searching'   : false,
+								'ordering'    : false,
+								'info'        : true,
+								'autoWidth'   : false,
+								'data': tbl3_9_records,
+								'lengthMenu': [[ 10, 25, 50, 100 ],[ 10, 25, 50, 100 ]],
+								'columns': [
+									{ "data": "index" },
+									{ "data": "app" },
+									{ "data": "port" },
+									{ "data": "clientCount" },
+									{ "data": "rxBytes" },
+									{ "data": "txBytes" },
+									{ "data": "traffic" }
+								],
+								"columnDefs": [
+									{
+										"render": $.fn.dataTable.render.percentBar( 'round','#FFF', '#269ABC', '#286090', '#31B0D5', 1, 'groove', metadata_max_rxBytes),
+										"targets": 4
+									},
+									{
+										"render": $.fn.dataTable.render.percentBar( 'round','#FFF', '#269ABC', '#286090', '#31B0D5', 1, 'groove', metadata_max_txBytes),
+										"targets": 5
+									},
+									{
+										"render": $.fn.dataTable.render.percentBar( 'round','#FFF', '#269ABC', '#286090', '#31B0D5', 1, 'groove', metadata_max_traffic),
+										"targets": 6
+									},
+									{
+										// The `data` parameter refers to the data for the cell (defined by the
+										// `data` option, which defaults to the column being worked with, in
+										// this case `data: 0`.
+										"render": function ( data, type, row ) {
+											return toCurrency(Math.round(data));
+										},
+										"targets": 3
+									},
+									{
+										"targets": 0,
+										"className": 'dt-body-center'
+									},
+									{
+										"targets": 3,
+										"className": 'dt-body-right'
+									}
+									
+								],
+								"dom": 'Blfrtip',
+								"buttons": [
+									'csvHtml5',
+									'excelHtml5',
+									'pdfHtml5'
+								]
+							})
+						}else{
+							tbl3_9.clear().draw();
+							tbl3_9.rows.add(records.data); // Add new data
+							tbl3_9.columns.adjust().draw(); // Redraw the DataTable
+						}
+/*
+								"buttons": [
+									'colvis',
+									'copyHtml5',
+									'csvHtml5',
+									'excelHtml5',
+									'pdfHtml5',
+									'print'
+								]
+
+*/						
+					}catch( e){
+						msgBox("資料解析失敗，找不到資料!"+e.toString());
+					}
+				}else{
+					msgBox("取得資料時失敗：" + data.resultText);
+				}
+			}
+
+		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
+	}
+
 	
 	function clearAllReport(){
 		$('.reportdata').text("");
