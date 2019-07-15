@@ -796,10 +796,14 @@
 						var t8 = [];
 						var t9 = [];
 						var t10 = [];
+						alert(JSON.stringify(records.data[0]));
+						alert(JSON.stringify(records.data[1]));
 						$.each( records.data, function(i, r) {
 							if (i==0){
 								$.each( r, function(i1, r1) {
+									
 									if (jsonData["name"]){
+									
 										jsonData = {};
 										jsonData["name"]=r1.app;
 										jsonData["y"]=r1.totalTraffic;
@@ -814,7 +818,7 @@
 										seriesData.data.push(jsonData);
 									}
 								});
-							alert("i==0");
+							
 							}	//if (i==0){
 							if (i==1){
 								$.each( r, function(i1, r1) {
@@ -877,7 +881,7 @@
 						myLabel["enabled"]=false;
 						
 						var ar = [];
-						alert("i==3");
+						alert(JSON.stringify(seriesData));
 						if (seriesData.data[0].name){
 							jsonData = {};
 							jsonData["name"]=seriesData.data[0].name;
