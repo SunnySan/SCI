@@ -766,7 +766,6 @@
 		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
 
-	var chart_3_7_records = null;
 	function getReport3_7(){
 
 		var metadata_totalTraffic = 0.0;
@@ -785,47 +784,6 @@
 					var records = JSON.parse(data.records);
 					try{
 						var seriesData = { name: $("#sel3_7_metric option:selected").text(),colorByPoint: true,data:[]};
-						var chartData = $.map(records.data[0], function(obj, i) {
-							return [obj.app, obj.totalTraffic];
-						})
-						seriesData.data.push(chartData);
-						console.log(JSON.stringify(seriesData));
-
-						metadata_totalTraffic = records.metadata.totalTraffic;
-						//Pie chart
-						Highcharts.chart('chart_3_7_1', {
-							chart: {
-								plotBackgroundColor: null,
-								plotBorderWidth: null,
-								plotShadow: false,
-								type: 'pie'
-							},
-							title: {
-								text: $("#sel3_7_metric option:selected").text() + " consumes " + formatBytes(metadata_totalTraffic)
-							},
-							tooltip: {
-								pointFormat: '{series.name}: <b>{point.totalTraffic}</b>'
-							},
-							plotOptions: {
-								pie: {
-									allowPointSelect: true,
-									cursor: 'pointer',
-									dataLabels: {
-										enabled: true,
-										format: '{point.name}',
-										style: {
-											color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
-											fontWeight: 'normal',
-											fontSize: '14px'
-										}
-									}
-								}
-							},
-							series: [seriesData]
-						});
-						return;
-						
-						
 						var jsonData = {};
 						var time = [];
 						var t1 = [];
