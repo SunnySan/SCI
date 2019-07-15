@@ -634,7 +634,7 @@
 		var tribeId = "";
 		//  移除全部的項目
 		$("#ap option").remove();
-		$("#ap").append($("<option></option>").attr("value", "all").text("全部"));
+		$("#ap").append($("<option></option>").attr("value", "all").text("All"));
 		$("#aps").find(":selected").each(function() {
 			tribeId = this.value;
 			if (tribeId!="all"){	//找該APs底下的AP
@@ -758,6 +758,8 @@
 					}catch( e){
 						msgBox("資料解析失敗，找不到資料!");
 					}
+				}else if (data.resultCode=="00007"){
+					msgBox(data.resultText, function (){location.href="login.html";});
 				}else{
 					msgBox("取得資料時失敗：" + data.resultText);
 				}
@@ -766,15 +768,15 @@
 		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
 
-	var chart_3_7_records = null;
 	function getReport3_7(){
-
+		Highcharts.chart('chart_3_7_1', {title: {text: ""}});
+		Highcharts.chart('chart_3_7_2', {title: {text: ""}});
+		
 		var metadata_totalTraffic = 0.0;
 		
 		var sData = generateQueryString("3", "7");
 		sData += "&metric=" + $('#sel3_7_metric').val();
 		sData += "&granularity=" + $('#sel3_7_granularity').val();
-		//console.log(sData);
 
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
 			if (!data.resultCode || !data.resultText){
@@ -784,107 +786,23 @@
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
 					try{
-						var seriesData = { name: $("#sel3_7_metric option:selected").text(),colorByPoint: true,data:[]};
-						var chartData = $.map(records.data[0], function(obj, i) {
-							return [obj.app, obj.totalTraffic];
-						})
-						seriesData.data.push(chartData);
+						if (records==null || records.data==null || records.data.length==0){
+							msgBox("沒有資料");
+							return;
+						}
+						var seriesData = { name: $("#sel3_7_metric option:selected").text(),colorByPoint: true, data:[]};
+						var jsonData = {};
+						if (typeof(records.data[0])=="object"){
+							$.each( records.data[0], function(i1, r1) {
+								jsonData = {};
+								jsonData["name"]=r1.app;
+								jsonData["y"]=r1.totalTraffic;
+								jsonData["vol"]=formatBytes(r1.totalTraffic);
+								seriesData.data.push(jsonData);
+							});	//$.each( data.orders, function(i, r) {
+						}
 						console.log(JSON.stringify(seriesData));
 
-						metadata_totalTraffic = records.metadata.totalTraffic;
-						//Pie chart
-						Highcharts.chart('chart_3_7_1', {
-							chart: {
-								plotBackgroundColor: null,
-								plotBorderWidth: null,
-								plotShadow: false,
-								type: 'pie'
-							},
-							title: {
-								text: $("#sel3_7_metric option:selected").text() + " consumes " + formatBytes(metadata_totalTraffic)
-							},
-							tooltip: {
-								pointFormat: '{series.name}: <b>{point.totalTraffic}</b>'
-							},
-							plotOptions: {
-								pie: {
-									allowPointSelect: true,
-									cursor: 'pointer',
-									dataLabels: {
-										enabled: true,
-										format: '{point.name}',
-										style: {
-											color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
-											fontWeight: 'normal',
-											fontSize: '14px'
-										}
-									}
-								}
-							},
-							series: [seriesData]
-						});
-						return;
-						
-						
-						var jsonData = {};
-						var time = [];
-						var t1 = [];
-						var t2 = [];
-						var t3 = [];
-						var t4 = [];
-						var t5 = [];
-						var t6 = [];
-						var t7 = [];
-						var t8 = [];
-						var t9 = [];
-						var t10 = [];
-						alert(JSON.stringify(records.data[0]));
-						alert(JSON.stringify(records.data[1]));
-						$.each( records.data, function(i, r) {
-							if (i==0){
-								$.each( r, function(i1, r1) {
-									
-									if (jsonData["name"]){
-									
-										jsonData = {};
-										jsonData["name"]=r1.app;
-										jsonData["y"]=r1.totalTraffic;
-										jsonData["vol"]=formatBytes(r1.totalTraffic);
-										/*
-										if (i1==0){
-											jsonData["sliced"]=true;
-											jsonData["selected"]=true;
-										}
-										*/
-										//alert(JSON.stringify(jsonData));
-										seriesData.data.push(jsonData);
-									}
-								});
-							
-							}	//if (i==0){
-							if (i==1){
-								$.each( r, function(i1, r1) {
-									$.each( r1, function(i2, r2) {
-										if (i2==0) t1.push(r1[seriesData.data[0].name]);
-										if (i2==1) t2.push(r1[seriesData.data[1].name]);
-										if (i2==2) t3.push(r1[seriesData.data[2].name]);
-										if (i2==3) t4.push(r1[seriesData.data[3].name]);
-										if (i2==4) t5.push(r1[seriesData.data[4].name]);
-										if (i2==5) t6.push(r1[seriesData.data[5].name]);
-										if (i2==6) t7.push(r1[seriesData.data[6].name]);
-										if (i2==7) t8.push(r1[seriesData.data[7].name]);
-										if (i2==8) t9.push(r1[seriesData.data[8].name]);
-										if (i2==9) t10.push(r1[seriesData.data[9].name]);
-										var localTime = moment.utc(r1.start).local().format('YYYY-MM-DD HH:mm');
-										//console.log("localTime= "+localTime);
-										time.push(localTime);
-									});
-								});
-								//console.log("time= "+JSON.stringify(time));
-							alert("i==1");
-							}	//if (i==1){
-						});	//$.each( data.orders, function(i, r) {
-						alert("i==2");
 						metadata_totalTraffic = records.metadata.totalTraffic;
 						//Pie chart
 						Highcharts.chart('chart_3_7_1', {
@@ -918,84 +836,40 @@
 							series: [seriesData]
 						});
 
-						//Line chart
+						var time = [];
+						var ar = new Array();
 						var myLabel = {};
+						var j = 0;
 						myLabel["enabled"]=false;
-						
-						var ar = [];
-						alert(JSON.stringify(seriesData));
-						if (seriesData.data[0].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[0].name;
-							jsonData["data"]=t1;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
+						seriesData = { name: $("#sel3_7_metric option:selected").text(),colorByPoint: true, data:[]};
+						if (typeof(records.data[1])=="object"){
+							$.each( records.data[1], function(i1, r1) {
+								for (var k in r1){
+									if (r1.hasOwnProperty(k) && k!="start" & k!="end") {
+										if (i1==0){
+											ar[j] = {"name":"", "data":[], "label":{"enabled":false}};
+											ar[j].name = k;
+											ar[j].data.push(r1[k]);
+											j++;
+										}else{
+											for (l=0; l<ar.length;l++){
+												if (ar[l].name==k){
+													ar[l].data.push(r1[k]);
+												}
+											}
+										}
+										//alert("Key is " + k + ", value is " + r1[k]);
+									}
+								}
+
+								var localTime = moment.utc(r1.start).local().format('YYYY-MM-DD HH:mm');
+								//console.log("localTime= "+localTime);
+								time.push(localTime);
+							});	//$.each( data.orders, function(i, r) {
 						}
-						alert("i==4");
-						if (seriesData.data[1].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[1].name;
-							jsonData["data"]=t2;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[2].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[2].name;
-							jsonData["data"]=t3;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[3].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[3].name;
-							jsonData["data"]=t4;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[4].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[4].name;
-							jsonData["data"]=t5;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[5].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[5].name;
-							jsonData["data"]=t6;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[6].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[6].name;
-							jsonData["data"]=t7;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[7].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[7].name;
-							jsonData["data"]=t8;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[8].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[8].name;
-							jsonData["data"]=t9;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[9].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[9].name;
-							jsonData["data"]=t10;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						//console.log(JSON.stringify(ar));
+						if (j>0) seriesData.data.push(ar);
+						//console.log(JSON.stringify(seriesData));
+						//console.log(JSON.stringify(time));
 
 						//Line chart
 						Highcharts.chart('chart_3_7_2', {
@@ -1062,6 +936,8 @@
 					}catch( e){
 						msgBox("資料解析失敗，找不到資料!"+e.toString());
 					}
+				}else if (data.resultCode=="00007"){
+					msgBox(data.resultText, function (){location.href="login.html";});
 				}else{
 					msgBox("取得資料時失敗：" + data.resultText);
 				}
@@ -1071,6 +947,8 @@
 	}
 
 	function getReport3_11(){
+		Highcharts.chart('chart_3_11_1', {title: {text: ""}});
+		Highcharts.chart('chart_3_11_2', {title: {text: ""}});
 
 		var metadata_totalClients = 0.0;
 		
@@ -1086,56 +964,23 @@
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
 					try{
-						var seriesData = { name: 'Clients',colorByPoint: true,data:[]};
+						if (records==null || records.data==null || records.data.length==0){
+							msgBox("沒有資料");
+							return;
+						}
+						var seriesData = { name: "Clients",colorByPoint: true, data:[]};
 						var jsonData = {};
-						var time = [];
-						var t1 = [];
-						var t2 = [];
-						var t3 = [];
-						var t4 = [];
-						var t5 = [];
-						var t6 = [];
-						var t7 = [];
-						var t8 = [];
-						var t9 = [];
-						var t10 = [];
-						$.each( records.data, function(i, r) {
-							if (i==0){
-								$.each( r, function(i1, r1) {
-									jsonData = {};
-									jsonData["name"]=r1.app;
-									jsonData["y"]=Math.round(r1.uniqueUsers);
-									jsonData["vol"]=Math.round(r1.uniqueUsers);
-									/*
-									if (i1==0){
-										jsonData["sliced"]=true;
-										jsonData["selected"]=true;
-									}
-									*/
-									//alert(JSON.stringify(jsonData));
-									seriesData.data.push(jsonData);
-								});
-							}	//if (i==0){
-							
-							if (i==1){
-								$.each( r, function(i1, r1) {
-									t1.push(Math.round(r1[seriesData.data[0].name]));
-									t2.push(Math.round(r1[seriesData.data[1].name]));
-									t3.push(Math.round(r1[seriesData.data[2].name]));
-									t4.push(Math.round(r1[seriesData.data[3].name]));
-									t5.push(Math.round(r1[seriesData.data[4].name]));
-									t6.push(Math.round(r1[seriesData.data[5].name]));
-									t7.push(Math.round(r1[seriesData.data[6].name]));
-									t8.push(Math.round(r1[seriesData.data[7].name]));
-									t9.push(Math.round(r1[seriesData.data[8].name]));
-									t10.push(Math.round(r1[seriesData.data[9].name]));
-									var localTime = moment.utc(r1.start).local().format('YYYY-MM-DD HH:mm');
-									//console.log("localTime= "+localTime);
-									time.push(localTime);
-								});
-								//console.log("time= "+JSON.stringify(time));
-							}	//if (i==1){
-						});	//$.each( data.orders, function(i, r) {
+						if (typeof(records.data[0])=="object"){
+							$.each( records.data[0], function(i1, r1) {
+								jsonData = {};
+								jsonData["name"]=r1.app;
+								jsonData["y"]=Math.round(r1.uniqueUsers);
+								jsonData["vol"]=Math.round(r1.uniqueUsers);
+								seriesData.data.push(jsonData);
+							});	//$.each( data.orders, function(i, r) {
+						}
+						//console.log(JSON.stringify(seriesData));
+
 						metadata_totalClients = Math.round(records.metadata.totalClients);
 						//Pie chart
 						Highcharts.chart('chart_3_11_1', {
@@ -1169,62 +1014,40 @@
 							series: [seriesData]
 						});
 
-						//Line chart
+						var time = [];
+						var ar = new Array();
 						var myLabel = {};
+						var j = 0;
 						myLabel["enabled"]=false;
+						seriesData = { name: "Clients",colorByPoint: true, data:[]};
+						if (typeof(records.data[1])=="object"){
+							$.each( records.data[1], function(i1, r1) {
+								for (var k in r1){
+									if (r1.hasOwnProperty(k) && k!="start" & k!="end") {
+										if (i1==0){
+											ar[j] = {"name":"", "data":[], "label":{"enabled":false}};
+											ar[j].name = k;
+											ar[j].data.push(Math.round(r1[k]));
+											j++;
+										}else{
+											for (l=0; l<ar.length;l++){
+												if (ar[l].name==k){
+													ar[l].data.push(Math.round(r1[k]));
+												}
+											}
+										}
+										//alert("Key is " + k + ", value is " + r1[k]);
+									}
+								}
 
-						var ar = [];
-						jsonData = {};
-						jsonData["name"]=seriesData.data[0].name;
-						jsonData["data"]=t1;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[1].name;
-						jsonData["data"]=t2;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[2].name;
-						jsonData["data"]=t3;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[3].name;
-						jsonData["data"]=t4;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[4].name;
-						jsonData["data"]=t5;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[5].name;
-						jsonData["data"]=t6;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[6].name;
-						jsonData["data"]=t7;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[7].name;
-						jsonData["data"]=t8;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[8].name;
-						jsonData["data"]=t9;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						jsonData = {};
-						jsonData["name"]=seriesData.data[9].name;
-						jsonData["data"]=t10;
-						jsonData["label"]=myLabel;
-						ar.push(jsonData);
-						//console.log(JSON.stringify(ar));
+								var localTime = moment.utc(r1.start).local().format('YYYY-MM-DD HH:mm');
+								//console.log("localTime= "+localTime);
+								time.push(localTime);
+							});	//$.each( data.orders, function(i, r) {
+						}
+						if (j>0) seriesData.data.push(ar);
+						//console.log(JSON.stringify(seriesData));
+						//console.log(JSON.stringify(time));
 
 						//Line chart
 						Highcharts.chart('chart_3_11_2', {
@@ -1291,6 +1114,8 @@
 					}catch( e){
 						msgBox("資料解析失敗，找不到資料!"+e.toString());
 					}
+				}else if (data.resultCode=="00007"){
+					msgBox(data.resultText, function (){location.href="login.html";});
 				}else{
 					msgBox("取得資料時失敗：" + data.resultText);
 				}
@@ -1300,13 +1125,6 @@
 	}
 
 
-
-
-
-
-
-
-
 	var tbl3_8 = null;
 	var tbl3_8_records = null;
 
@@ -1314,6 +1132,8 @@
 	var tbl3_9_records = null;
 	
 	function getReport3_8(){
+		if (tbl3_8!=null) tbl3_8.clear().draw();
+
 		var metadata_max_traffic = 0;
 		var metadata_max_txBytes = 0;
 		var metadata_max_rxBytes = 0;
@@ -1333,6 +1153,10 @@
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
 					try{
+						if (records==null || records.data==null || records.data.length==0){
+							msgBox("沒有資料");
+							return;
+						}
 						metadata_totalTraffic = records.metadata.totalTraffic;
 						metadata_percentage = records.metadata.percentage;
 						metadata_traffic = records.metadata.traffic;
@@ -1420,6 +1244,8 @@
 					}catch( e){
 						msgBox("資料解析失敗，找不到資料!"+e.toString());
 					}
+				}else if (data.resultCode=="00007"){
+					msgBox(data.resultText, function (){location.href="login.html";});
 				}else{
 					msgBox("取得資料時失敗：" + data.resultText);
 				}
@@ -1430,6 +1256,8 @@
 
 
 	function getReport3_9(){
+		if (tbl3_9!=null) tbl3_9.clear().draw();
+
 		var metadata_max_traffic = 0;
 		var metadata_max_txBytes = 0;
 		var metadata_max_rxBytes = 0;
@@ -1449,6 +1277,10 @@
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
 					try{
+						if (records==null || records.data==null || records.data.length==0){
+							msgBox("沒有資料");
+							return;
+						}
 						metadata_totalTraffic = records.metadata.totalTraffic;
 						metadata_percentage = records.metadata.percentage;
 						metadata_traffic = records.metadata.traffic;
@@ -1536,6 +1368,8 @@
 					}catch( e){
 						msgBox("資料解析失敗，找不到資料!"+e.toString());
 					}
+				}else if (data.resultCode=="00007"){
+					msgBox(data.resultText, function (){location.href="login.html";});
 				}else{
 					msgBox("取得資料時失敗：" + data.resultText);
 				}
