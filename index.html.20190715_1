@@ -799,46 +799,40 @@
 						$.each( records.data, function(i, r) {
 							if (i==0){
 								$.each( r, function(i1, r1) {
-									if (jsonData["name"]){
-										jsonData = {};
-										jsonData["name"]=r1.app;
-										jsonData["y"]=r1.totalTraffic;
-										jsonData["vol"]=formatBytes(r1.totalTraffic);
-										/*
-										if (i1==0){
-											jsonData["sliced"]=true;
-											jsonData["selected"]=true;
-										}
-										*/
-										//alert(JSON.stringify(jsonData));
-										seriesData.data.push(jsonData);
+									jsonData = {};
+									jsonData["name"]=r1.app;
+									jsonData["y"]=r1.totalTraffic;
+									jsonData["vol"]=formatBytes(r1.totalTraffic);
+									/*
+									if (i1==0){
+										jsonData["sliced"]=true;
+										jsonData["selected"]=true;
 									}
+									*/
+									//alert(JSON.stringify(jsonData));
+									seriesData.data.push(jsonData);
 								});
-							alert("i==0");
 							}	//if (i==0){
+							
 							if (i==1){
 								$.each( r, function(i1, r1) {
-									$.each( r1, function(i2, r2) {
-										if (i2==0) t1.push(r1[seriesData.data[0].name]);
-										if (i2==1) t2.push(r1[seriesData.data[1].name]);
-										if (i2==2) t3.push(r1[seriesData.data[2].name]);
-										if (i2==3) t4.push(r1[seriesData.data[3].name]);
-										if (i2==4) t5.push(r1[seriesData.data[4].name]);
-										if (i2==5) t6.push(r1[seriesData.data[5].name]);
-										if (i2==6) t7.push(r1[seriesData.data[6].name]);
-										if (i2==7) t8.push(r1[seriesData.data[7].name]);
-										if (i2==8) t9.push(r1[seriesData.data[8].name]);
-										if (i2==9) t10.push(r1[seriesData.data[9].name]);
-										var localTime = moment.utc(r1.start).local().format('YYYY-MM-DD HH:mm');
-										//console.log("localTime= "+localTime);
-										time.push(localTime);
-									});
+									t1.push(r1[seriesData.data[0].name]);
+									t2.push(r1[seriesData.data[1].name]);
+									t3.push(r1[seriesData.data[2].name]);
+									t4.push(r1[seriesData.data[3].name]);
+									t5.push(r1[seriesData.data[4].name]);
+									t6.push(r1[seriesData.data[5].name]);
+									t7.push(r1[seriesData.data[6].name]);
+									t8.push(r1[seriesData.data[7].name]);
+									t9.push(r1[seriesData.data[8].name]);
+									t10.push(r1[seriesData.data[9].name]);
+									var localTime = moment.utc(r1.start).local().format('YYYY-MM-DD HH:mm');
+									//console.log("localTime= "+localTime);
+									time.push(localTime);
 								});
 								//console.log("time= "+JSON.stringify(time));
-							alert("i==1");
 							}	//if (i==1){
 						});	//$.each( data.orders, function(i, r) {
-						alert("i==2");
 						metadata_totalTraffic = records.metadata.totalTraffic;
 						//Pie chart
 						Highcharts.chart('chart_3_7_1', {
@@ -877,78 +871,56 @@
 						myLabel["enabled"]=false;
 						
 						var ar = [];
-						alert("i==3");
-						if (seriesData.data[0].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[0].name;
-							jsonData["data"]=t1;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						alert("i==4");
-						if (seriesData.data[1].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[1].name;
-							jsonData["data"]=t2;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[2].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[2].name;
-							jsonData["data"]=t3;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[3].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[3].name;
-							jsonData["data"]=t4;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[4].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[4].name;
-							jsonData["data"]=t5;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[5].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[5].name;
-							jsonData["data"]=t6;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[6].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[6].name;
-							jsonData["data"]=t7;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[7].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[7].name;
-							jsonData["data"]=t8;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[8].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[8].name;
-							jsonData["data"]=t9;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
-						if (seriesData.data[9].name){
-							jsonData = {};
-							jsonData["name"]=seriesData.data[9].name;
-							jsonData["data"]=t10;
-							jsonData["label"]=myLabel;
-							ar.push(jsonData);
-						}
+						jsonData = {};
+						jsonData["name"]=seriesData.data[0].name;
+						jsonData["data"]=t1;
+						jsonData["label"]=myLabel;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[1].name;
+						jsonData["data"]=t2;
+						jsonData["label"]=myLabel;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[2].name;
+						jsonData["data"]=t3;
+						jsonData["label"]=myLabel;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[3].name;
+						jsonData["data"]=t4;
+						jsonData["label"]=myLabel;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[4].name;
+						jsonData["data"]=t5;
+						jsonData["label"]=myLabel;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[5].name;
+						jsonData["data"]=t6;
+						jsonData["label"]=myLabel;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[6].name;
+						jsonData["data"]=t7;
+						jsonData["label"]=myLabel;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[7].name;
+						jsonData["data"]=t8;
+						jsonData["label"]=myLabel;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[8].name;
+						jsonData["data"]=t9;
+						jsonData["label"]=myLabel;
+						ar.push(jsonData);
+						jsonData = {};
+						jsonData["name"]=seriesData.data[9].name;
+						jsonData["data"]=t10;
+						jsonData["label"]=myLabel;
+						ar.push(jsonData);
 						//console.log(JSON.stringify(ar));
 
 						//Line chart
