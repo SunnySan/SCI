@@ -22,7 +22,8 @@
 	<!-- DataTables -->
 	<link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 	<link rel="stylesheet" href="bower_components/datatables.net/css/buttons.dataTables.min.css">
-  
+	<!-- iCheck -->
+	<link rel="stylesheet" href="plugins/iCheck/square/blue.css">
 	<!-- Theme style -->
 	<link rel="stylesheet" href="dist/css/AdminLTE.min.css">
 	<!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -289,6 +290,13 @@
 					<div class="box-tools pull-right">
 						<table>
 							<tr>
+								<td valign="top">
+									<div class="checkbox icheck" style="margin-top:5px;margin-right:10px;">
+										<label>
+											<input type="checkbox" id="chk3_7"> Select lines
+										</label>
+									</div>
+								</td>
 								<td>
 									<div class="form-group">
 										<select id="sel3_7_metric" class="form-control" onchange="getReport3_7();">
@@ -308,11 +316,11 @@
 										</select>
 									</div>
 								</td>
-								<td>
+								<td valign="top">
 									<button type="button" class="btn btn-box-tool col-md-2" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
 									<i class="fa fa-minus"></i></button>
 								</td>
-								<td>
+								<td valign="top">
 									<button type="button" class="btn btn-box-tool col-md-2" data-widget="remove" data-toggle="tooltip" title="Remove">
 									<i class="fa fa-times"></i></button>
 								</td>
@@ -351,6 +359,13 @@
 					<div class="box-tools pull-right">
 						<table>
 							<tr>
+								<td valign="top">
+									<div class="checkbox icheck" style="margin-top:5px;margin-right:10px;">
+										<label>
+											<input type="checkbox" id="chk3_11"> Select lines
+										</label>
+									</div>
+								</td>
 								<td>
 									<div class="form-group">
 										<select id="sel3_11_granularity" class="form-control" onchange="getReport3_11();">
@@ -361,11 +376,11 @@
 										</select>
 									</div>
 								</td>
-								<td>
+								<td valign="top">
 									<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
 									<i class="fa fa-minus"></i></button>
 								</td>
-								<td>
+								<td valign="top">
 									<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
 									<i class="fa fa-times"></i></button>
 								</td>
@@ -416,11 +431,11 @@
 										</select>
 									</div>
 								</td>
-								<td>
+								<td valign="top">
 									<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
 									<i class="fa fa-minus"></i></button>
 								</td>
-								<td>
+								<td valign="top">
 									<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
 									<i class="fa fa-times"></i></button>
 								</td>
@@ -483,11 +498,11 @@
 										</select>
 									</div>
 								</td>
-								<td>
+								<td valign="top">
 									<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
 									<i class="fa fa-minus"></i></button>
 								</td>
-								<td>
+								<td valign="top">
 									<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
 									<i class="fa fa-times"></i></button>
 								</td>
@@ -579,7 +594,8 @@
 <script src="bower_components/datatables.net/js/buttons.html5.min.js"></script>
 <script src="bower_components/datatables.net/js/buttons.colVis.min.js"></script>
 <script src="bower_components/datatables.net/js/buttons.print.min.js"></script>
-
+<!-- iCheck -->
+<script src="plugins/iCheck/icheck.min.js"></script>
 
 <script type="text/javascript" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/util.js"></script>
@@ -633,6 +649,12 @@
 				$('#endDate').val(end.format('YYYY-MM-DD'));
 			}
 		);
+		
+		$('input').iCheck({
+			checkboxClass: 'icheckbox_square-blue',
+			radioClass: 'iradio_square-blue',
+			increaseArea: '20%' /* optional */
+		});
 		
 		/*
 		tbl3_8 = $('#tbl3_8').DataTable({
@@ -814,6 +836,7 @@
 		}, false);	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
 
+	var chart_3_7_2 = null;
 	function getReport3_7(){
 		addLoadingOverlay('#box3_7');
 		Highcharts.chart('chart_3_7_1', {title: {text: ""}});
@@ -920,7 +943,7 @@
 						//console.log(JSON.stringify(time));
 
 						//Line chart
-						Highcharts.chart('chart_3_7_2', {
+						chart_3_7_2 = Highcharts.chart('chart_3_7_2', {
 							title: {
 								text: $("#sel3_7_metric option:selected").text() + ' (' + $("#sel3_7_granularity option:selected").text() + ')'
 							},
@@ -994,6 +1017,7 @@
 		}, false);	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
 
+	var chart_3_11_2 = null;
 	function getReport3_11(){
 		addLoadingOverlay('#box3_11');
 		Highcharts.chart('chart_3_11_1', {title: {text: ""}});
@@ -1100,7 +1124,7 @@
 						//console.log(JSON.stringify(time));
 
 						//Line chart
-						Highcharts.chart('chart_3_11_2', {
+						chart_3_11_2 = Highcharts.chart('chart_3_11_2', {
 							title: {
 								text: ''
 							},
@@ -1450,6 +1474,29 @@
 	function removeLoadingOverlay(divId){
 		$(divId + ' .overlay').remove();
 	}
+	
+	$('#chk3_7').on('ifChecked', function(event){
+		if (chart_3_7_2!=null){
+			chart_3_7_2.legend.update({enabled:true});
+		}
+	});
+	$('#chk3_7').on('ifUnchecked', function(event){
+		if (chart_3_7_2!=null){
+			chart_3_7_2.legend.update({enabled:false});
+		}
+	});
+
+	$('#chk3_11').on('ifChecked', function(event){
+		if (chart_3_11_2!=null){
+			chart_3_11_2.legend.update({enabled:true});
+		}
+	});
+	$('#chk3_11').on('ifUnchecked', function(event){
+		if (chart_3_11_2!=null){
+			chart_3_11_2.legend.update({enabled:false});
+		}
+	});
+
 </script>
 
 
