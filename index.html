@@ -118,7 +118,7 @@
 		<section class="content">
 
 			<!-- Default box -->
-			<div class="box">
+			<div class="box" id="boxFilter">
 				<div class="box-header with-border">
 					<h3 class="box-title">Search criteria</h3>
 					
@@ -206,7 +206,7 @@
 
 
 			<!-- Default box -->
-			<div class="box">
+			<div class="box" id="box3_10">
 				<div class="box-header with-border">
 					<h3 class="box-title">Overview</h3>
 					
@@ -283,29 +283,41 @@
 
 
 			<!-- Default box -->
-			<div class="box">
+			<div class="box" id="box3_7">
 				<div class="box-header with-border">
-					<h3 class="box-title col-xs-8">Top 10 Applications by Traffic Volume</h3>
-					<div class="box-tools pull-right col-xs-4">
-						<div class="form-group col-xs-6">
-							<select id="sel3_7_metric" class="form-control" onchange="getReport3_7();">
-								<option selected value="traffic">User Traffic</option>
-								<option value="rxBytes">Rx User</option>
-								<option value="txBytes">Tx User</option>
-							</select>
-						</div>
-						<div class="form-group col-xs-4">
-							<select id="sel3_7_granularity" class="form-control" onchange="getReport3_7();">
-								<option selected value="fifteen_minute">15 min</option>
-								<option value="thirty_minute">30 min</option>
-								<option value="hour">1 hour</option>
-								<option value="day">1 day</option>
-							</select>
-						</div>
-						<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
-						<i class="fa fa-minus"></i></button>
-						<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-						<i class="fa fa-times"></i></button>
+					<h3 class="box-title">Top 10 Applications by Traffic Volume</h3>
+					<div class="box-tools pull-right">
+						<table>
+							<tr>
+								<td>
+									<div class="form-group">
+										<select id="sel3_7_metric" class="form-control" onchange="getReport3_7();">
+											<option selected value="traffic">User Traffic</option>
+											<option value="rxBytes">Rx User</option>
+											<option value="txBytes">Tx User</option>
+										</select>
+									</div>
+								</td>
+								<td style="padding-left:10px;">
+									<div class="form-group">
+										<select id="sel3_7_granularity" class="form-control" onchange="getReport3_7();">
+											<option selected value="fifteen_minute">15 min</option>
+											<option value="thirty_minute">30 min</option>
+											<option value="hour">1 hour</option>
+											<option value="day">1 day</option>
+										</select>
+									</div>
+								</td>
+								<td>
+									<button type="button" class="btn btn-box-tool col-md-2" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
+									<i class="fa fa-minus"></i></button>
+								</td>
+								<td>
+									<button type="button" class="btn btn-box-tool col-md-2" data-widget="remove" data-toggle="tooltip" title="Remove">
+									<i class="fa fa-times"></i></button>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div><!-- Box header -->
 				<div class="box-body">
@@ -333,22 +345,32 @@
 
 
 			<!-- Default box -->
-			<div class="box">
+			<div class="box" id="box3_11">
 				<div class="box-header with-border">
 					<h3 class="box-title">Top 10 Applications by Client Count</h3>
 					<div class="box-tools pull-right">
-						<div class="form-group col-xs-8">
-							<select id="sel3_11_granularity" class="form-control" onchange="getReport3_11();">
-								<option selected value="fifteen_minute">15 min</option>
-								<option value="thirty_minute">30 min</option>
-								<option value="hour">1 hour</option>
-								<option value="day">1 day</option>
-							</select>
-						</div>
-						<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
-						<i class="fa fa-minus"></i></button>
-						<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-						<i class="fa fa-times"></i></button>
+						<table>
+							<tr>
+								<td>
+									<div class="form-group">
+										<select id="sel3_11_granularity" class="form-control" onchange="getReport3_11();">
+											<option selected value="fifteen_minute">15 min</option>
+											<option value="thirty_minute">30 min</option>
+											<option value="hour">1 hour</option>
+											<option value="day">1 day</option>
+										</select>
+									</div>
+								</td>
+								<td>
+									<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
+									<i class="fa fa-minus"></i></button>
+								</td>
+								<td>
+									<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+									<i class="fa fa-times"></i></button>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div><!-- Box header -->
 				<div class="box-body">
@@ -377,23 +399,33 @@
 
 
 			<!-- Default box -->
-			<div class="box">
+			<div class="box" id="box3_8">
 				<div class="box-header with-border">
-					<h3 class="box-title col-xs-10">Top Applications by Traffic&nbsp;&nbsp;<small>These applications consume <span id="3_8_metadata_percentage"></span> % ( <span id="3_8_metadata_traffic"></span> ) of the total traffic ( <span id="3_8_metadata_totalTraffic"></span> ).</small></h3>
-					<div class="box-tools pull-right col-xs-2">
-						<div class="form-group col-xs-8">
-							<select id="sel3_8_limit" class="form-control" onchange="getReport3_8();">
-								<option value="0">All</option>
-								<option selected value="10">Top 10</option>
-								<option value="20">Top 20</option>
-								<option value="50">Top 50</option>
-								<option value="100">Top 100</option>
-							</select>
-						</div>
-						<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
-						<i class="fa fa-minus"></i></button>
-						<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-						<i class="fa fa-times"></i></button>
+					<h3 class="box-title">Top Applications by Traffic&nbsp;&nbsp;<small>These applications consume <span id="3_8_metadata_percentage"></span> % ( <span id="3_8_metadata_traffic"></span> ) of the total traffic ( <span id="3_8_metadata_totalTraffic"></span> ).</small></h3>
+					<div class="box-tools pull-right">
+						<table>
+							<tr>
+								<td>
+									<div class="form-group">
+										<select id="sel3_8_limit" class="form-control" onchange="getReport3_8();">
+											<option value="0">All</option>
+											<option selected value="10">Top 10</option>
+											<option value="20">Top 20</option>
+											<option value="50">Top 50</option>
+											<option value="100">Top 100</option>
+										</select>
+									</div>
+								</td>
+								<td>
+									<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
+									<i class="fa fa-minus"></i></button>
+								</td>
+								<td>
+									<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+									<i class="fa fa-times"></i></button>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div><!-- Box header -->
 				<div class="box-body">
@@ -434,23 +466,33 @@
 
 
 			<!-- Default box -->
-			<div class="box">
+			<div class="box" id="box3_9">
 				<div class="box-header with-border">
-					<h3 class="box-title col-xs-10">Top Applications by Client Count&nbsp;&nbsp;<small>These applications consume <span id="3_9_metadata_percentage"></span> % ( <span id="3_9_metadata_traffic"></span> ) of the total traffic ( <span id="3_9_metadata_totalTraffic"></span> ).</small></h3>
-					<div class="box-tools pull-right col-xs-2">
-						<div class="form-group col-xs-8">
-							<select id="sel3_9_limit" class="form-control" onchange="getReport3_9();">
-								<option value="0">All</option>
-								<option selected value="10">Top 10</option>
-								<option value="20">Top 20</option>
-								<option value="50">Top 50</option>
-								<option value="100">Top 100</option>
-							</select>
-						</div>
-						<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
-						<i class="fa fa-minus"></i></button>
-						<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-						<i class="fa fa-times"></i></button>
+					<h3 class="box-title">Top Applications by Client Count&nbsp;&nbsp;<small>These applications consume <span id="3_9_metadata_percentage"></span> % ( <span id="3_9_metadata_traffic"></span> ) of the total traffic ( <span id="3_9_metadata_totalTraffic"></span> ).</small></h3>
+					<div class="box-tools pull-right">
+						<table>
+							<tr>
+								<td>
+									<div class="form-group">
+										<select id="sel3_9_limit" class="form-control" onchange="getReport3_9();">
+											<option value="0">All</option>
+											<option selected value="10">Top 10</option>
+											<option value="20">Top 20</option>
+											<option value="50">Top 50</option>
+											<option value="100">Top 100</option>
+										</select>
+									</div>
+								</td>
+								<td>
+									<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
+									<i class="fa fa-minus"></i></button>
+								</td>
+								<td>
+									<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+									<i class="fa fa-times"></i></button>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div><!-- Box header -->
 				<div class="box-body">
@@ -622,11 +664,14 @@
 
 	var tribeList = null;
 	function getTribeApList(){
-		$.getJSON( "TribeApList.json", function(data) { 
+		addLoadingOverlay('#boxFilter');
+		$.getJSON( "TribeApList.json", function(data) {
+			removeLoadingOverlay('#boxFilter');
 			tribeList = data;
 			$.each( data.tribes, function(j, t) {
 				$("#aps").append($("<option></option>").attr("value", t.tribe).text(t.tribe));
 			});	//$.each( data.tribes, function(j, t) {
+			//$('.box').boxRefresh();
 		});	//$.getJSON( "TribeApList.json", function(data) { 
 	}
 	
@@ -715,7 +760,7 @@
 	}
 
 	function getReport3_10(){
-
+		addLoadingOverlay('#box3_10');
 		var applications = 0.0;
 		var totalRxBytes = 0.0;
 		var totalTxBytes = 0.0;
@@ -728,6 +773,7 @@
 		//console.log(sData);
 
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
+			removeLoadingOverlay('#box3_10');
 			if (!data.resultCode || !data.resultText){
 				msgBox("無法取得資料");
 				return;
@@ -765,10 +811,11 @@
 				}
 			}
 
-		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
+		}, false);	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
 
 	function getReport3_7(){
+		addLoadingOverlay('#box3_7');
 		Highcharts.chart('chart_3_7_1', {title: {text: ""}});
 		Highcharts.chart('chart_3_7_2', {title: {text: ""}});
 		
@@ -779,6 +826,7 @@
 		sData += "&granularity=" + $('#sel3_7_granularity').val();
 
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
+			removeLoadingOverlay('#box3_7');
 			if (!data.resultCode || !data.resultText){
 				msgBox("無法取得資料");
 				return;
@@ -801,7 +849,7 @@
 								seriesData.data.push(jsonData);
 							});	//$.each( data.orders, function(i, r) {
 						}
-						console.log(JSON.stringify(seriesData));
+						//console.log(JSON.stringify(seriesData));
 
 						metadata_totalTraffic = records.metadata.totalTraffic;
 						//Pie chart
@@ -943,10 +991,11 @@
 				}
 			}
 
-		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
+		}, false);	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
 
 	function getReport3_11(){
+		addLoadingOverlay('#box3_11');
 		Highcharts.chart('chart_3_11_1', {title: {text: ""}});
 		Highcharts.chart('chart_3_11_2', {title: {text: ""}});
 
@@ -957,6 +1006,7 @@
 		//console.log(sData);
 
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
+			removeLoadingOverlay('#box3_11');
 			if (!data.resultCode || !data.resultText){
 				msgBox("無法取得資料");
 				return;
@@ -1121,7 +1171,7 @@
 				}
 			}
 
-		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
+		}, false);	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
 
 
@@ -1132,6 +1182,10 @@
 	var tbl3_9_records = null;
 	
 	function getReport3_8(){
+		addLoadingOverlay('#box3_8');
+		$('#3_8_metadata_percentage').text('');
+		$('#3_8_metadata_traffic').text('');
+		$('#3_8_metadata_totalTraffic').text('');
 		if (tbl3_8!=null) tbl3_8.clear().draw();
 
 		var metadata_max_traffic = 0;
@@ -1146,6 +1200,7 @@
 		//console.log(sData);
 
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
+			removeLoadingOverlay('#box3_8');
 			if (!data.resultCode || !data.resultText){
 				msgBox("無法取得資料");
 				return;
@@ -1251,11 +1306,15 @@
 				}
 			}
 
-		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
+		}, false);	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
 
 
 	function getReport3_9(){
+		addLoadingOverlay('#box3_9');
+		$('#3_9_metadata_percentage').text('');
+		$('#3_9_metadata_traffic').text('');
+		$('#3_9_metadata_totalTraffic').text('');
 		if (tbl3_9!=null) tbl3_9.clear().draw();
 
 		var metadata_max_traffic = 0;
@@ -1270,6 +1329,7 @@
 		//console.log(sData);
 
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
+			removeLoadingOverlay('#box3_9');
 			if (!data.resultCode || !data.resultText){
 				msgBox("無法取得資料");
 				return;
@@ -1375,13 +1435,21 @@
 				}
 			}
 
-		});	//getDataFromServer("xxx.jsp", sData, "json", function(data){
+		}, false);	//getDataFromServer("xxx.jsp", sData, "json", function(data){
 	}
 
 	
 	function clearAllReport(){
 		$('.reportdata').text("");
 	}	//function clearAllReport(){
+	
+	
+	function addLoadingOverlay(divId){
+		$(divId).append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+	}
+	function removeLoadingOverlay(divId){
+		$(divId + ' .overlay').remove();
+	}
 </script>
 
 
