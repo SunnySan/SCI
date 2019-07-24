@@ -13,12 +13,17 @@
 <%@include file="00_utility.jsp"%>
 
 <%
-/***************輸入範例********************************************************
-所有資料
-http://127.0.0.1:8080/CHT/ajaxGetPaymentOrderList.jsp
+/***************建立 table 指令********************************************************
+CREATE TABLE `sci_tribe` (
+  `id` int(11) NOT NULL,
+  `tribe` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `group` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `ap` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `mac` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `ip` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-單一資料
-http://127.0.0.1:8080/CHT/ajaxGetPaymentOrderList.jsp?Payment_Order_ID=TX15011901DA55595D5898AD
 *******************************************************************************/
 
 /***************輸出範例********************************************************

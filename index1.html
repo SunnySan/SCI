@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -52,19 +52,17 @@
 	</style> 
 
 </head>
-<!--<body class="hold-transition skin-blue sidebar-mini fixed sidebar-collapse">-->
-<body class="hold-transition skin-blue sidebar-mini fixed">
+<body class="hold-transition skin-blue sidebar-mini fixed sidebar-collapse">
 <!-- Site wrapper -->
 <div class="wrapper">
 
 	<header class="main-header">
 		<!-- Logo -->
-		<a href="#" class="logo" style="padding:0px;">
+		<a href="index2.html" class="logo">
 			<!-- mini logo for sidebar mini 50x50 pixels -->
 			<span class="logo-mini"><b>SCI</b></span>
 			<!-- logo for regular state and mobile devices -->
-			<!--<span class="logo-lg"><b>Ruckus</b>&nbsp;SCI</span>-->
-			<span class="logo-lg"><img src="images/logo.svg" style="width:100%;height:40px;" /></span>
+			<span class="logo-lg"><b>Ruckus</b>&nbsp;SCI</span>
 		</a>
 		<!-- Header Navbar: style can be found in header.less -->
 		<nav class="navbar navbar-static-top">
@@ -710,8 +708,8 @@
 				$.each( tribeList.tribes, function(j, t) {
 					if (t.tribe==tribeId){
 						$.each( t.aps, function(i, r) {
-							//$("#ap").append($("<option></option>").attr("value", r.mac).text(r.tribe + ": " + r.ap + "(" + r.mac + ")"));
-							$("#ap").append($("<option></option>").attr("value", r.ap).text(r.ap));
+							$("#ap").append($("<option></option>").attr("value", r.mac).text(r.tribe + ": " + r.ap + "(" + r.mac + ")"));
+							//$("#ap").append($("<option></option>").attr("value", r.ap).text(r.ap));
 						});	//$.each( t.aps, function(i, r) {
 					}
 				});	//$.each( data.tribes, function(j, t) {
@@ -754,8 +752,8 @@
 			$("#ap").find(":selected").each(function() {
 				bHasFilter = true;
 				jsonData["type"]="selector";
-				//jsonData["dimension"]="apMac";
-				jsonData["dimension"]="apName";
+				jsonData["dimension"]="apMac";
+				//jsonData["dimension"]="apName";
 				jsonData["value"]=this.value;
 				filterData.fields.push(jsonData);
 			});
