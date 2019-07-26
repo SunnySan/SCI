@@ -730,6 +730,7 @@
 		var sData = "";
 		var bHasFilter = false;
 		var s = "";
+		var ss = "";
 		var filterData = { "type":"or","fields":[]};
 		var jsonData = {};
 		
@@ -738,27 +739,34 @@
 		sData += "&startDate=" + startDate;
 		sData += "&endDate=" + endDate;
 		
-		s = $('#aps').val();
-		if (s.indexOf("all")<0){
-			$("#aps").find(":selected").each(function() {
-				bHasFilter = true;
-				jsonData["type"]="selector";
-				jsonData["dimension"]="zoneName";
-				jsonData["value"]=this.value;
-				filterData.fields.push(jsonData);
-			});
-		}	//if (s.indexOf("all")<0){
 
 		s = $('#ap').val();
 		if (s.indexOf("all")<0){
 			$("#ap").find(":selected").each(function() {
+				//alert("2: " +this.value);
 				bHasFilter = true;
 				jsonData["type"]="selector";
 				//jsonData["dimension"]="apMac";
 				jsonData["dimension"]="apName";
 				jsonData["value"]=this.value;
+				ss += (ss==""?JSON.stringify(jsonData):"," + JSON.stringify(jsonData))
 				filterData.fields.push(jsonData);
+				//alert(JSON.stringify(filterData));
 			});
+		}else{
+			s = $('#aps').val();
+			if (s.indexOf("all")<0){
+				$("#aps").find(":selected").each(function() {
+					//alert("1: " +this.value);
+					bHasFilter = true;
+					jsonData["type"]="selector";
+					jsonData["dimension"]="zoneName";
+					jsonData["value"]=this.value;
+					ss += (ss==""?JSON.stringify(jsonData):"," + JSON.stringify(jsonData))
+					filterData.fields.push(jsonData);
+					//alert(JSON.stringify(filterData));
+				});
+			}	//if (s.indexOf("all")<0){
 		}	//if (s.indexOf("all")<0){
 
 		s = $('#radio').val();
@@ -768,11 +776,14 @@
 				jsonData["type"]="selector";
 				jsonData["dimension"]="radio";
 				jsonData["value"]=this.value;
+				ss += (ss==""?JSON.stringify(jsonData):"," + JSON.stringify(jsonData))
 				filterData.fields.push(jsonData);
 			});
 		}	//if (s.indexOf("all")<0){
 
-		if (bHasFilter) sData += "&filter=" + JSON.stringify(filterData);
+		//if (bHasFilter) sData += "&filter=" + JSON.stringify(filterData);
+		if (bHasFilter) sData += "&filter=" + '{ "type":"and","fields":[' + ss + ']}';
+		console.log(sData);
 		return sData;
 	}	//function generateQueryString(reportId, section){	//產生查詢條件
 
