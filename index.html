@@ -751,7 +751,7 @@
 				jsonData["value"]=this.value;
 				ss += (ss==""?JSON.stringify(jsonData):"," + JSON.stringify(jsonData))
 				filterData.fields.push(jsonData);
-				//alert(JSON.stringify(filterData));
+				console.log(JSON.stringify(filterData));
 			});
 		}else{
 			s = $('#aps').val();
