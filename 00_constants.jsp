@@ -7,6 +7,7 @@ public static final String	gcDataSourceNameCMSIOT						= "jdbc/cmsiot";
 //登入帳號
 public static final String[][]	gcUsers								= {{"Sunny", "Sunny"}
 																		, {"frank", "2222"}
+																		, {"APC", "APC123"}
 																	  };
 
 //SCI API server URL

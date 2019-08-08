@@ -52,8 +52,8 @@
 	</style> 
 
 </head>
-<!--<body class="hold-transition skin-blue sidebar-mini fixed sidebar-collapse">-->
-<body class="hold-transition skin-blue sidebar-mini fixed">
+<body class="hold-transition skin-blue sidebar-mini fixed sidebar-collapse">
+<!--<body class="hold-transition skin-blue sidebar-mini fixed">-->
 <!-- Site wrapper -->
 <div class="wrapper">
 
@@ -143,7 +143,7 @@
 							</div><!-- <div class="form-group"> -->
 						</div><!-- ./col -->
 
-						<div class="col-lg-4 col-xs-12">
+						<div class="col-lg-4 col-xs-12" style="display:none;">
 							<div class="form-group">
 								<label>AP</label>
 								<select id="ap" class="form-control select2" multiple="multiple" data-placeholder="Select AP" style="width: 100%;">
@@ -552,13 +552,6 @@
 		</section><!-- /.content -->
 	</div><!-- /.content-wrapper -->
 
-	<footer class="main-footer">
-		<div class="pull-right hidden-xs">
-			<small>Powered by <a href="https://adminlte.io" target="_blank">Almsaeed Studio</a></small>
-		</div>
-		<strong>Copyright &copy; 2019 <a href="https://www.tiis.com.tw/" target="_blank">TIIS</a>.</strong> All rights reserved.
-	</footer>
-
 </div>
 <!-- ./wrapper -->
 </body>
@@ -751,8 +744,8 @@
 				jsonData["value"]=this.value;
 				ss += (ss==""?JSON.stringify(jsonData):"," + JSON.stringify(jsonData))
 				filterData.fields.push(jsonData);
-				console.log(JSON.stringify(filterData));
 			});
+			//console.log(JSON.stringify(filterData));
 		}else{
 			s = $('#aps').val();
 			if (s.indexOf("all")<0){
@@ -782,8 +775,8 @@
 		}	//if (s.indexOf("all")<0){
 
 		//if (bHasFilter) sData += "&filter=" + JSON.stringify(filterData);
-		if (bHasFilter) sData += "&filter=" + '{ "type":"and","fields":[' + ss + ']}';
-		console.log(sData);
+		if (bHasFilter) sData += "&filter=" + '{ "type":"or","fields":[' + ss + ']}';
+		//console.log(sData);
 		return sData;
 	}	//function generateQueryString(reportId, section){	//產生查詢條件
 
