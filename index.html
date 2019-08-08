@@ -143,7 +143,7 @@
 							</div><!-- <div class="form-group"> -->
 						</div><!-- ./col -->
 
-						<div class="col-lg-4 col-xs-12" style="display:none;">
+						<div class="col-lg-4 col-xs-12">
 							<div class="form-group">
 								<label>AP</label>
 								<select id="ap" class="form-control select2" multiple="multiple" data-placeholder="Select AP" style="width: 100%;">
@@ -732,50 +732,45 @@
 		sData += "&startDate=" + startDate;
 		sData += "&endDate=" + endDate;
 		
+		var oFilter = {"type":"and","fields":[]};
+		var oAps	= {"type":"or","fields":[]};
+		var oApName	= {"type":"in","dimension":"apName","values":[]};
+		var oRadio	= {"type":"in","dimension":"radio","values":[]};
+		var bAps	= false;
+		var bApName	= false;
+		var bRadio	= false;
+		var tmp		= "";
+
+		s = $('#aps').val();
+		if (s.indexOf("all")<0){
+			$("#aps").find(":selected").each(function() {
+				tmp = '{"type":"and","fields":[{"type":"selector","dimension":"zoneName","value":"' + this.value + '"}]}';
+				jsonData = JSON.parse(tmp);
+				oAps.fields.push(jsonData);
+				bAps = true;
+			});
+		}	//if (s.indexOf("all")<0){
+		if (bAps) oFilter.fields.push(oAps);
 
 		s = $('#ap').val();
 		if (s.indexOf("all")<0){
 			$("#ap").find(":selected").each(function() {
-				//alert("2: " +this.value);
-				bHasFilter = true;
-				jsonData["type"]="selector";
-				//jsonData["dimension"]="apMac";
-				jsonData["dimension"]="apName";
-				jsonData["value"]=this.value;
-				ss += (ss==""?JSON.stringify(jsonData):"," + JSON.stringify(jsonData))
-				filterData.fields.push(jsonData);
+				oApName.values.push(this.value);
+				bApName = true;
 			});
-			//console.log(JSON.stringify(filterData));
-		}else{
-			s = $('#aps').val();
-			if (s.indexOf("all")<0){
-				$("#aps").find(":selected").each(function() {
-					//alert("1: " +this.value);
-					bHasFilter = true;
-					jsonData["type"]="selector";
-					jsonData["dimension"]="zoneName";
-					jsonData["value"]=this.value;
-					ss += (ss==""?JSON.stringify(jsonData):"," + JSON.stringify(jsonData))
-					filterData.fields.push(jsonData);
-					//alert(JSON.stringify(filterData));
-				});
-			}	//if (s.indexOf("all")<0){
 		}	//if (s.indexOf("all")<0){
+		if (bApName) oFilter.fields.push(oApName);
 
 		s = $('#radio').val();
 		if (s.indexOf("all")<0){
 			$("#radio").find(":selected").each(function() {
-				bHasFilter = true;
-				jsonData["type"]="selector";
-				jsonData["dimension"]="radio";
-				jsonData["value"]=this.value;
-				ss += (ss==""?JSON.stringify(jsonData):"," + JSON.stringify(jsonData))
-				filterData.fields.push(jsonData);
+				oRadio.values.push(this.value);
+				bRadio = true;
 			});
 		}	//if (s.indexOf("all")<0){
+		if (bRadio) oFilter.fields.push(oRadio);
 
-		//if (bHasFilter) sData += "&filter=" + JSON.stringify(filterData);
-		if (bHasFilter) sData += "&filter=" + '{ "type":"or","fields":[' + ss + ']}';
+		if (bAps || bApName || bRadio) sData += "&filter=" + JSON.stringify(oFilter);
 		//console.log(sData);
 		return sData;
 	}	//function generateQueryString(reportId, section){	//產生查詢條件
