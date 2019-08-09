@@ -609,7 +609,7 @@
 	function initPage(){
 		var uid = getLocalValue("uid");
 		if (beEmpty(uid)){
-			msgBox("閒置太久，請重新登入!", function(){location.href="login.html";});
+			msgBox("Please login first!", function(){location.href="login.html";});
 		}
 		$('.sysUserName').text(uid);
 		$('.sidebar-menu').tree();
@@ -800,7 +800,7 @@
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
 			removeLoadingOverlay('#box3_10');
 			if (!data.resultCode || !data.resultText){
-				msgBox("無法取得資料");
+				msgBox("Unable to get data");
 				return;
 			}else{
 				if (data.resultCode=="00000"){
@@ -827,12 +827,12 @@
 						$('#3_10_metadata_traffic').text(formatBytes(metadata_traffic));
 						$('#3_10_metadata_totalTraffic').text(formatBytes(metadata_totalTraffic));
 					}catch( e){
-						msgBox("資料解析失敗，找不到資料!");
+						msgBox("Failed to parse data!");
 					}
 				}else if (data.resultCode=="00007"){
 					msgBox(data.resultText, function (){location.href="login.html";});
 				}else{
-					msgBox("取得資料時失敗：" + data.resultText);
+					msgBox("Error when retrieving data: " + data.resultText);
 				}
 			}
 
@@ -854,14 +854,14 @@
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
 			removeLoadingOverlay('#box3_7');
 			if (!data.resultCode || !data.resultText){
-				msgBox("無法取得資料");
+				msgBox("Unable to get data");
 				return;
 			}else{
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
 					try{
 						if (records==null || records.data==null || records.data.length==0){
-							msgBox("沒有資料");
+							msgBox("No data");
 							return;
 						}
 						var seriesData = { name: $("#sel3_7_metric option:selected").text(),colorByPoint: true, data:[]};
@@ -1008,12 +1008,12 @@
 						});
 
 					}catch( e){
-						msgBox("資料解析失敗，找不到資料!"+e.toString());
+						msgBox("Failed to parse data!");
 					}
 				}else if (data.resultCode=="00007"){
 					msgBox(data.resultText, function (){location.href="login.html";});
 				}else{
-					msgBox("取得資料時失敗：" + data.resultText);
+					msgBox("Error when retrieving data: " + data.resultText);
 				}
 			}
 
@@ -1035,14 +1035,14 @@
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
 			removeLoadingOverlay('#box3_11');
 			if (!data.resultCode || !data.resultText){
-				msgBox("無法取得資料");
+				msgBox("Unable to get data");
 				return;
 			}else{
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
 					try{
 						if (records==null || records.data==null || records.data.length==0){
-							msgBox("沒有資料");
+							msgBox("No data");
 							return;
 						}
 						var seriesData = { name: "Clients",colorByPoint: true, data:[]};
@@ -1189,12 +1189,12 @@
 						});
 
 					}catch( e){
-						msgBox("資料解析失敗，找不到資料!"+e.toString());
+						msgBox("Failed to parse data!"+e.toString());
 					}
 				}else if (data.resultCode=="00007"){
 					msgBox(data.resultText, function (){location.href="login.html";});
 				}else{
-					msgBox("取得資料時失敗：" + data.resultText);
+					msgBox("Error when retrieving data: " + data.resultText);
 				}
 			}
 
@@ -1229,14 +1229,14 @@
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
 			removeLoadingOverlay('#box3_8');
 			if (!data.resultCode || !data.resultText){
-				msgBox("無法取得資料");
+				msgBox("Unable to get data");
 				return;
 			}else{
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
 					try{
 						if (records==null || records.data==null || records.data.length==0){
-							msgBox("沒有資料");
+							msgBox("No data");
 							return;
 						}
 						metadata_totalTraffic = records.metadata.totalTraffic;
@@ -1324,12 +1324,12 @@
 
 */						
 					}catch( e){
-						msgBox("資料解析失敗，找不到資料!"+e.toString());
+						msgBox("Failed to parse data!"+e.toString());
 					}
 				}else if (data.resultCode=="00007"){
 					msgBox(data.resultText, function (){location.href="login.html";});
 				}else{
-					msgBox("取得資料時失敗：" + data.resultText);
+					msgBox("Error when retrieving data: " + data.resultText);
 				}
 			}
 
@@ -1358,14 +1358,14 @@
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
 			removeLoadingOverlay('#box3_9');
 			if (!data.resultCode || !data.resultText){
-				msgBox("無法取得資料");
+				msgBox("Unable to get data");
 				return;
 			}else{
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
 					try{
 						if (records==null || records.data==null || records.data.length==0){
-							msgBox("沒有資料");
+							msgBox("No data");
 							return;
 						}
 						metadata_totalTraffic = records.metadata.totalTraffic;
@@ -1453,12 +1453,12 @@
 
 */						
 					}catch( e){
-						msgBox("資料解析失敗，找不到資料!"+e.toString());
+						msgBox("Failed to parse data!"+e.toString());
 					}
 				}else if (data.resultCode=="00007"){
 					msgBox(data.resultText, function (){location.href="login.html";});
 				}else{
-					msgBox("取得資料時失敗：" + data.resultText);
+					msgBox("Error when retrieving data: " + data.resultText);
 				}
 			}
 

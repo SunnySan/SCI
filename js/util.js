@@ -158,7 +158,7 @@ function setLocalValue(key, value, expires){	//若expires為空值，則僅存�
 /**********顯示類似alert的message box**********/
 function msgBox(msg, callbackClose){
 	if ( typeof(dialogMessage) == "undefined"){
-		$('body').append('<div id="dialogMessage" title="系統通知"></div>');
+		$('body').append('<div id="dialogMessage" title="System Info"></div>');
 	}
 	$('#dialogMessage').html(msg);
 
