@@ -136,7 +136,7 @@ try{
 }
 
 if (bOK){
-	if (reportId.equals("system") || reportId.equals("apmac")) writeLog("info", "sResponse= " + sResponse);
+	//if (reportId.equals("system") || reportId.equals("apmac")) writeLog("info", "sResponse= " + sResponse);
 	sResultCode	= gcResultCodeSuccess;
 	sResultText	= gcResultTextSuccess;
 	obj.put("records", sResponse);
