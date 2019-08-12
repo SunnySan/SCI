@@ -682,37 +682,6 @@
 	var tribeList = null;
 	function getTribeApList(){
 		addLoadingOverlay('#boxFilter');
-		var sData = generateQueryString("system", "system");
-		//console.log(sData);
-
-		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
-			removeLoadingOverlay('#boxFilter');
-			if (!data.resultCode || !data.resultText){
-				msgBox("Unable to get data");
-				return;
-			}else{
-				if (data.resultCode=="00000"){
-					var records = JSON.parse(data.records);
-					//alert(JSON.stringify(records.data));
-					try{
-						$.each( records, function(i, r) {
-							$("#aps").append($("<option></option>").attr("value", r.filterText).text(r.text));
-						});	//$.each( data.orders, function(i, r) {
-					}catch( e){
-						msgBox("Failed to parse data!");
-					}
-				}else if (data.resultCode=="00007"){
-					msgBox(data.resultText, function (){location.href="login.html";});
-				}else{
-					msgBox("Error when retrieving data: " + data.resultText);
-				}
-			}
-
-		}, false);	//getDataFromServer("xxx.jsp", sData, "json", function(data){
-	}
-
-	function getTribeApList_old(){
-		addLoadingOverlay('#boxFilter');
 		$.getJSON( "TribeApList.json", function(data) {
 			removeLoadingOverlay('#boxFilter');
 			tribeList = data;
@@ -724,48 +693,6 @@
 	}
 	
 	function updateApList(){
-		//  移除全部的項目
-		$("#ap option").remove();
-		$("#ap").append($("<option></option>").attr("value", "all").text("All"));
-
-		addLoadingOverlay('#boxFilter');
-		var sData = generateQueryString("apmac", "apmac");
-		var tmp = null;
-		//console.log(sData);
-
-		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
-			removeLoadingOverlay('#boxFilter');
-			if (!data.resultCode || !data.resultText){
-				msgBox("Unable to get data");
-				return;
-			}else{
-				if (data.resultCode=="00000"){
-					var records = JSON.parse(data.records);
-					//alert(JSON.stringify(records.data));
-					try{
-						$.each( records, function(i, r) {
-							tmp = r.split(" ");
-							if (tmp.length==2){
-								$("#ap").append($("<option></option>").attr("value", tmp[0]).text(tmp[0]));
-							}else{
-								$("#ap").append($("<option></option>").attr("value", "").text("error"));
-							}
-							//$("#ap").append($("<option></option>").attr("value", r).text(r));
-						});	//$.each( data.orders, function(i, r) {
-					}catch( e){
-						msgBox("Failed to parse data!");
-					}
-				}else if (data.resultCode=="00007"){
-					msgBox(data.resultText, function (){location.href="login.html";});
-				}else{
-					msgBox("Error when retrieving data: " + data.resultText);
-				}
-			}
-
-		}, false);	//getDataFromServer("xxx.jsp", sData, "json", function(data){
-	}
-
-	function updateApList_old(){
 		var tribeId = "";
 		//  移除全部的項目
 		$("#ap option").remove();
@@ -804,7 +731,6 @@
 		sData += "&section=" + section;
 		sData += "&startDate=" + startDate;
 		sData += "&endDate=" + endDate;
-		if (reportId=="system" || reportId=="apmac") sData += "&type=system";
 		
 		var oFilter = {"type":"and","fields":[]};
 		var oAps	= {"type":"or","fields":[]};
@@ -816,7 +742,7 @@
 		var tmp		= "";
 
 		s = $('#aps').val();
-		if (s.indexOf("all")<0 && reportId!="system"){
+		if (s.indexOf("all")<0){
 			$("#aps").find(":selected").each(function() {
 				tmp = '{"type":"and","fields":[{"type":"selector","dimension":"zoneName","value":"' + this.value + '"}]}';
 				jsonData = JSON.parse(tmp);
@@ -825,16 +751,9 @@
 			});
 		}	//if (s.indexOf("all")<0){
 		if (bAps) oFilter.fields.push(oAps);
-		if (reportId=="system"){	//list all APS
-			tmp = '{"type":"and","fields":[{"type":"selector","dimension":"system","value":"itribecluster"}]}';
-			oFilter = JSON.parse(tmp);
-			bAps = true;
-		}
-		
-		//console.log(JSON.Stringify(oFilter));
 
 		s = $('#ap').val();
-		if (s.indexOf("all")<0 && reportId!="system" && reportId!="apmac"){
+		if (s.indexOf("all")<0){
 			$("#ap").find(":selected").each(function() {
 				oApName.values.push(this.value);
 				bApName = true;
@@ -843,7 +762,7 @@
 		if (bApName) oFilter.fields.push(oApName);
 
 		s = $('#radio').val();
-		if (s.indexOf("all")<0 && reportId!="system" && reportId!="apmac"){
+		if (s.indexOf("all")<0){
 			$("#radio").find(":selected").each(function() {
 				oRadio.values.push(this.value);
 				bRadio = true;

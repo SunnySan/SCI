@@ -33,6 +33,7 @@ String filter		= nullToString(request.getParameter("filter"), "");
 String metric		= nullToString(request.getParameter("metric"), "");
 String granularity	= nullToString(request.getParameter("granularity"), "");
 String limit		= nullToString(request.getParameter("limit"), "");
+String type			= nullToString(request.getParameter("type"), "");
 
 String uid		= (String) session.getAttribute("uid");
 String token	= (String) session.getAttribute("token");
@@ -66,11 +67,21 @@ String				sciApiUrl	= "";
 String				sData		= "";
 String				sResponse	= "";
 String				ss	= "";
-
-sciApiUrl = gcSCIServerURL + "api/reports/" + reportId + "/sections/" + section + "/data?access_token=" + token;
+if (beEmpty(type)){	//一般報表
+	sciApiUrl = gcSCIServerURL + "api/reports/" + reportId + "/sections/" + section + "/data?access_token=" + token;
+}else{	//搜尋系統有哪些APs(部落)，或者某一個或多個部落中有哪些AP可以讓用戶選
+	sciApiUrl = gcSCIServerURL + "api/facets/" + section + "?access_token=" + token;;
+}
 sData = "start=" + startDate;
 sData += "&end=" + endDate;
-if (notEmpty(filter)) sData += "&filter=" + filter;
+if (notEmpty(filter)){
+	if (reportId.equals("system")){
+		sData += "&filter=" + java.net.URLEncoder.encode(filter);
+	}else{
+		sData += "&filter=" + filter;
+	}
+
+}
 if (notEmpty(metric)) sData += "&metric=" + metric;
 if (notEmpty(granularity)) sData += "&granularity=" + granularity;
 if (notEmpty(limit)) sData += "&limit=" + limit;
@@ -113,7 +124,7 @@ try{
 }
 
 if (bOK){
-	writeLog("info", "sResponse= " + sResponse);
+	//writeLog("info", "sResponse= " + sResponse);
 	sResultCode	= gcResultCodeSuccess;
 	sResultText	= gcResultTextSuccess;
 	obj.put("records", sResponse);
