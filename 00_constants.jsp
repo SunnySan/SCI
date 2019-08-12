@@ -12,7 +12,7 @@ public static final String[][]	gcUsers								= {{"Sunny", "Sunny"}
 
 //SCI API server URL
 public static final String gcSCIServerURL							= "https://172.20.1.16/";
-public static final String gcSCIUserName							= "user01";
+public static final String gcSCIUserName							= "user04";
 public static final String gcSCIPassword							= "1qaz@WSX";
 
 /*****************************************************************************/

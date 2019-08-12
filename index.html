@@ -135,6 +135,21 @@
 				<div class="box-body">
 					<div class="row">
 						<div class="col-lg-4 col-xs-12">
+							<!-- Date range -->
+							<div class="form-group">
+								<label>Date range</label>
+								<div class="input-group">
+									<div class="input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</div>
+									<input type="text" class="form-control pull-right" id="dateRange" placeholder="Select date range" onchange="getTribeApList();getAllReports();">
+								</div><!-- /.input group -->
+								<input type="hidden" id="startDate" value="">
+								<input type="hidden" id="endDate" value="">
+							</div><!-- /.form group -->				
+						</div><!-- ./col -->
+
+						<div class="col-lg-4 col-xs-12">
 							<div class="form-group">
 								<label>APs</label>
 								<select id="aps" onchange="updateApList();" class="form-control select2" multiple="multiple" data-placeholder="Select AP group" style="width: 100%;">
@@ -152,6 +167,9 @@
 							</div><!-- <div class="form-group"> -->
 						</div><!-- ./col -->
 
+					</div><!-- ./row -->
+
+					<div class="row">
 						<div class="col-lg-4 col-xs-12">
 							<div class="form-group">
 								<label>SSID</label>
@@ -163,9 +181,6 @@
 							</div><!-- <div class="form-group"> -->
 						</div><!-- ./col -->
 
-					</div><!-- ./row -->
-
-					<div class="row">
 						<div class="col-lg-4 col-xs-12">
 							<div class="form-group">
 								<label>Radio</label>
@@ -175,21 +190,6 @@
 									<option value="2.4">2.4GHz</option>
 								</select>
 							</div><!-- <div class="form-group"> -->
-						</div><!-- ./col -->
-
-						<div class="col-lg-4 col-xs-12">
-							<!-- Date range -->
-							<div class="form-group">
-								<label>Date range</label>
-								<div class="input-group">
-									<div class="input-group-addon">
-										<i class="fa fa-calendar"></i>
-									</div>
-									<input type="text" class="form-control pull-right" id="dateRange" placeholder="Select date range">
-								</div><!-- /.input group -->
-								<input type="hidden" id="startDate" value="">
-								<input type="hidden" id="endDate" value="">
-							</div><!-- /.form group -->				
 						</div><!-- ./col -->
 
 						<div class="col-lg-4 col-xs-12">
@@ -682,6 +682,12 @@
 	var tribeList = null;
 	function getTribeApList(){
 		addLoadingOverlay('#boxFilter');
+		//  移除全部的項目
+		$("#aps option").remove();
+		$("#aps").append($("<option></option>").attr("value", "all").text("All"));
+		//  移除全部的項目
+		$("#ap option").remove();
+		$("#ap").append($("<option></option>").attr("value", "all").text("All"));
 		var sData = generateQueryString("system", "system");
 		//console.log(sData);
 
@@ -729,8 +735,11 @@
 		$("#ap").append($("<option></option>").attr("value", "all").text("All"));
 
 		addLoadingOverlay('#boxFilter');
-		var sData = generateQueryString("apmac", "apmac");
+		//var sData = generateQueryString("apmac", "apmac");
+		var sData = generateQueryStringForAp();
+		
 		var tmp = null;
+		var ss = "";
 		//console.log(sData);
 
 		getDataFromServer("ajaxGetReport.jsp", sData, "json", function(data){
@@ -745,8 +754,18 @@
 					try{
 						$.each( records, function(i, r) {
 							tmp = r.split(" ");
-							if (tmp.length==2){
-								$("#ap").append($("<option></option>").attr("value", tmp[0]).text(tmp[0]));
+							ss = "";
+							if (tmp.length>1){
+								/*
+								for (var j=0;j<tmp.length-1;j++){
+									ss += (j==0?tmp[j]:" " + tmp[j]);
+								}
+								$("#ap").append($("<option></option>").attr("value", ss).text(ss));
+								*/
+								ss = tmp[tmp.length-1];
+								ss = ss.replace("(", "");
+								ss = ss.replace(")", "");
+								$("#ap").append($("<option></option>").attr("value", ss).text(r));
 							}else{
 								$("#ap").append($("<option></option>").attr("value", "").text("error"));
 							}
@@ -787,7 +806,50 @@
 	}
 
 
+	function generateQueryStringForAp(){	//專門給查詢AP清單的http body
+		var startDate = $('#startDate').val();
+		var endDate = $('#endDate').val();
 
+		var sData = "";
+		var bHasFilter = false;
+		var s = "";
+		var ss = "";
+		var filterData = { "type":"or","fields":[]};
+		var jsonData = {};
+		
+		sData = "reportId=apmac";
+		sData += "&section=apmac";
+		sData += "&startDate=" + startDate;
+		sData += "&endDate=" + endDate;
+		sData += "&type=system";
+		
+		var oFilter = {"type":"and","fields":[]};
+		var oAps	= {"type":"or","fields":[]};
+		var oApName	= {"type":"in","dimension":"apName","values":[]};
+		var oRadio	= {"type":"in","dimension":"radio","values":[]};
+		var bAps	= false;
+		var tmp		= "";
+		s = $('#aps').val();
+		oFilter = {"type":"or","fields":[]};
+		oAps	= {"type":"and","fields":[]};
+		if (s.indexOf("all")<0){
+			$("#aps").find(":selected").each(function() {
+				tmp = '{"type":"and","fields":[{"type":"selector","dimension":"system","value":"itribecluster"},{"type":"selector","dimension":"zoneName","value":"' + this.value + '"}]}';
+				jsonData = JSON.parse(tmp);
+				oFilter.fields.push(jsonData);
+				bAps = true;
+			});
+		}
+		var o = {};
+		o["start"] = startDate + "T00:00:00+08:00";
+		o["end"] = endDate + "T23:59:59+08:00";
+		if (bAps){
+			//oFilter.fields.push(oAps);
+			o["filter"] = oFilter;
+		}
+		sData += "&filter=" + JSON.stringify(o);
+		return sData;
+	}
 
 	function generateQueryString(reportId, section){	//產生查詢條件
 		var startDate = $('#startDate').val();
@@ -808,7 +870,8 @@
 		
 		var oFilter = {"type":"and","fields":[]};
 		var oAps	= {"type":"or","fields":[]};
-		var oApName	= {"type":"in","dimension":"apName","values":[]};
+		//var oApName	= {"type":"in","dimension":"apName","values":[]};
+		var oApName	= {"type":"in","dimension":"apMac","values":[]};
 		var oRadio	= {"type":"in","dimension":"radio","values":[]};
 		var bAps	= false;
 		var bApName	= false;
@@ -816,7 +879,7 @@
 		var tmp		= "";
 
 		s = $('#aps').val();
-		if (s.indexOf("all")<0 && reportId!="system"){
+		if (s.indexOf("all")<0 && reportId!="system" && reportId!="apmac"){
 			$("#aps").find(":selected").each(function() {
 				tmp = '{"type":"and","fields":[{"type":"selector","dimension":"zoneName","value":"' + this.value + '"}]}';
 				jsonData = JSON.parse(tmp);
@@ -824,6 +887,17 @@
 				bAps = true;
 			});
 		}	//if (s.indexOf("all")<0){
+		if (bAps) oFilter.fields.push(oAps);
+		if (reportId=="apmac"){
+			oFilter = {"type":"or","fields":[]};
+			oAps	= {"type":"and","fields":[]};
+			$("#aps").find(":selected").each(function() {
+				tmp = '{"type":"and","fields":[{"type":"selector","dimension":"system","value":"itribecluster"},{"type":"selector","dimension":"zoneName","value":"' + this.value + '"}]}';
+				jsonData = JSON.parse(tmp);
+				oAps.fields.push(jsonData);
+				bAps = true;
+			});
+		}
 		if (bAps) oFilter.fields.push(oAps);
 		if (reportId=="system"){	//list all APS
 			tmp = '{"type":"and","fields":[{"type":"selector","dimension":"system","value":"itribecluster"}]}';

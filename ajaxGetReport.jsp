@@ -55,8 +55,13 @@ if (beEmpty(uid) || beEmpty(token)){
 
 if (beEmpty(startDate)) startDate = getYesterday(gcDateFormatdashYMD);
 if (beEmpty(endDate)) endDate = getDateTimeNow(gcDateFormatdashYMD);
-startDate = java.net.URLEncoder.encode(startDate + "T00:00:00+08:00");
-endDate = java.net.URLEncoder.encode(endDate + "T23:59:59+08:00");
+if (reportId.equals("apmac")){
+	//startDate = startDate + "T00:00:00+08:00";
+	//endDate = endDate + "T23:59:59+08:00";
+}else{
+	startDate = java.net.URLEncoder.encode(startDate + "T00:00:00+08:00");
+	endDate = java.net.URLEncoder.encode(endDate + "T23:59:59+08:00");
+}
 
 int	i = 0;
 java.lang.Boolean	bOK = false;
@@ -77,6 +82,10 @@ sData += "&end=" + endDate;
 if (notEmpty(filter)){
 	if (reportId.equals("system")){
 		sData += "&filter=" + java.net.URLEncoder.encode(filter);
+	}else if (reportId.equals("apmac")){
+		sData = filter;
+		sData = sData.replace("T00:00:00 08:00", "T00:00:00+08:00");
+		sData = sData.replace("T23:59:59 08:00", "T23:59:59+08:00");
 	}else{
 		sData += "&filter=" + filter;
 	}
@@ -96,10 +105,13 @@ try{
 	URL u;
 	u = new URL(sciApiUrl);
 	HttpURLConnection uc = (HttpURLConnection)u.openConnection();
-	//uc.setRequestProperty ("Content-Type", "application/json");
-	uc.setRequestProperty("contentType", "utf-8");
+	if (reportId.equals("apmac")){
+		uc.setRequestProperty ("Content-Type", "application/json;charset=UTF-8");
+	}else{
+		//uc.setRequestProperty("contentType", "utf-8");
+		uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); 
+	}
 	uc.setRequestMethod("POST");
-	uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); 
 	uc.setDoOutput(true);
 	uc.setDoInput(true);
 
@@ -124,7 +136,7 @@ try{
 }
 
 if (bOK){
-	//writeLog("info", "sResponse= " + sResponse);
+	if (reportId.equals("system") || reportId.equals("apmac")) writeLog("info", "sResponse= " + sResponse);
 	sResultCode	= gcResultCodeSuccess;
 	sResultText	= gcResultTextSuccess;
 	obj.put("records", sResponse);
