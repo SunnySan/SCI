@@ -123,7 +123,7 @@
 			<!-- Default box -->
 			<div class="box" id="boxFilter">
 				<div class="box-header with-border">
-					<h3 class="box-title">Search criteria</h3>
+					<h3 class="box-title">Search criteria&nbsp;<span style="color:#FF0000;">Please select date range first.</span></h3>
 					
 					<div class="box-tools pull-right">
 						<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"	title="Collapse">
@@ -134,21 +134,6 @@
 				</div><!-- Box header -->
 				<div class="box-body">
 					<div class="row">
-						<div class="col-lg-4 col-xs-12">
-							<!-- Date range -->
-							<div class="form-group">
-								<label>Date range</label>
-								<div class="input-group">
-									<div class="input-group-addon">
-										<i class="fa fa-calendar"></i>
-									</div>
-									<input type="text" class="form-control pull-right" id="dateRange" placeholder="Select date range" onchange="getTribeApList();getAllReports();">
-								</div><!-- /.input group -->
-								<input type="hidden" id="startDate" value="">
-								<input type="hidden" id="endDate" value="">
-							</div><!-- /.form group -->				
-						</div><!-- ./col -->
-
 						<div class="col-lg-4 col-xs-12">
 							<div class="form-group">
 								<label>APs</label>
@@ -165,6 +150,21 @@
 									<option selected value="all">All</option>
 								</select>
 							</div><!-- <div class="form-group"> -->
+						</div><!-- ./col -->
+
+						<div class="col-lg-4 col-xs-12">
+							<!-- Date range -->
+							<div class="form-group">
+								<label>Date range</label>
+								<div class="input-group">
+									<div class="input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</div>
+									<input type="text" class="form-control pull-right" id="dateRange" placeholder="Select date range" onchange="getTribeApList();getAllReports();">
+								</div><!-- /.input group -->
+								<input type="hidden" id="startDate" value="">
+								<input type="hidden" id="endDate" value="">
+							</div><!-- /.form group -->				
 						</div><!-- ./col -->
 
 					</div><!-- ./row -->
@@ -644,6 +644,13 @@
 				$('#endDate').val(end.format('YYYY-MM-DD'));
 			}
 		);
+
+		/*
+		$('#dateRange').on('apply.daterangepicker', function(ev, picker) {
+			$('#startDate').val(picker.start.format('YYYY-MM-DD'));
+			$('#endDate').val(picker.end.format('YYYY-MM-DD'));
+		});
+		*/
 		
 		$('input').iCheck({
 			checkboxClass: 'icheckbox_square-blue',
@@ -672,7 +679,7 @@
 		})
 		*/
 		
-		getTribeApList();
+		//getTribeApList();
 		getAllReports();
 
 
@@ -688,6 +695,14 @@
 		//  移除全部的項目
 		$("#ap option").remove();
 		$("#ap").append($("<option></option>").attr("value", "all").text("All"));
+		
+		if (beEmpty($('#startDate').val())){
+			$('#startDate').val( getPreviousDate() );
+			$('#endDate').val( getCurrentDate() );
+			//console.log("startDate=" + $('#startDate').val() );
+			//console.log("endDate=" + $('#endDate').val() );
+		}
+
 		var sData = generateQueryString("system", "system");
 		//console.log(sData);
 
@@ -699,10 +714,14 @@
 			}else{
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
+					var s = "";
 					//alert(JSON.stringify(records.data));
 					try{
 						$.each( records, function(i, r) {
-							$("#aps").append($("<option></option>").attr("value", r.filterText).text(r.text));
+							s = r.text;
+							if (s=="iTribe_135" || s=="iTribe_136" || s=="iTribe_137" || s=="iTribe_138" || s=="iTribe_139" || s.startsWith("iTribe_14") || s.startsWith("iTribe_15") || s.startsWith("iTribe_16") || s.startsWith("iTribe_17") || s.startsWith("iTribe_18") || s.startsWith("iTribe_19")){
+								$("#aps").append($("<option></option>").attr("value", r.filterText).text(r.text));
+							}
 						});	//$.each( data.orders, function(i, r) {
 					}catch( e){
 						msgBox("Failed to parse data!");
