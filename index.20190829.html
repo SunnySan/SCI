@@ -596,7 +596,6 @@
 <script type="text/javascript" src="js/util.js"></script>
 <script type="text/javascript" src="js/jquery.blockUI.js"></script>
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
-<script type="text/javascript" src="js/trans.js"></script><!-- 將部落代號翻譯成中文名稱 -->
 
 <script>
 	$(document).ready(function () {
@@ -716,15 +715,12 @@
 				if (data.resultCode=="00000"){
 					var records = JSON.parse(data.records);
 					var s = "";
-					var sc = "";
 					//alert(JSON.stringify(records.data));
 					try{
 						$.each( records, function(i, r) {
 							s = r.text;
 							if (s=="iTribe_135" || s=="iTribe_136" || s=="iTribe_137" || s=="iTribe_138" || s=="iTribe_139" || s.startsWith("iTribe_14") || s.startsWith("iTribe_15") || s.startsWith("iTribe_16") || s.startsWith("iTribe_17") || s.startsWith("iTribe_18") || s.startsWith("iTribe_19")){
-								sc = getTrans(s);
-								//$("#aps").append($("<option></option>").attr("value", r.filterText).text(r.text));
-								$("#aps").append($("<option></option>").attr("value", r.filterText).text(sc));
+								$("#aps").append($("<option></option>").attr("value", r.filterText).text(r.text));
 							}
 						});	//$.each( data.orders, function(i, r) {
 					}catch( e){
